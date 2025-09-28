@@ -5907,21 +5907,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Default page dikhana (Home ya pehla tool)
   document.addEventListener("DOMContentLoaded", () => {
-    // Agar URL me koi hash hai toh us page ko show karo
     if (window.location.hash) {
       showPage(window.location.hash.substring(1));
     } else {
-      showPage("home"); // default page (id="home")
+      showPage("home"); // default page
     }
   });
 
   function showPage(id) {
+    // Sab pages hide karo
     document.querySelectorAll(".page").forEach(page => {
       page.style.display = "none";
     });
+
+    // Jo page chahiye usko show karo
     const pageToShow = document.getElementById(id);
     if (pageToShow) {
       pageToShow.style.display = "block";
+      // ✅ URL hash update karo
+      window.location.hash = id;
     }
   }
 
