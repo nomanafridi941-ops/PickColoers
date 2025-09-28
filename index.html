@@ -5900,7 +5900,25 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         /* 🎲 Random Palette Inspiration END (JS) */
 
+  // Default page dikhana (Home ya pehla tool)
+  document.addEventListener("DOMContentLoaded", () => {
+    // Agar URL me koi hash hai toh us page ko show karo
+    if (window.location.hash) {
+      showPage(window.location.hash.substring(1));
+    } else {
+      showPage("home"); // default page (id="home")
+    }
+  });
 
+  function showPage(id) {
+    document.querySelectorAll(".page").forEach(page => {
+      page.style.display = "none";
+    });
+    const pageToShow = document.getElementById(id);
+    if (pageToShow) {
+      pageToShow.style.display = "block";
+    }
+  }
 
 
 </script>
