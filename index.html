@@ -5384,8 +5384,8 @@ canvas.addEventListener("click", e => {
     }
 });
 
-// Extract colors from entire canvas
-function extractColorsFromCanvas(maxColors = 20) {
+// Extract ALL visible colors (no max limit)
+function extractColorsFromCanvas() {
     if (canvas.style.display === "none") {
         showToast("⚠️ Capture a frame first!");
         paletteDiv.innerHTML = "<div style='color:#c00; padding:1em;'>Please capture a frame from the video before extracting colors.</div>";
@@ -5400,18 +5400,21 @@ function extractColorsFromCanvas(maxColors = 20) {
         showToast("❌ Unable to read canvas data");
         return;
     }
-    const colorMap = {};
 
+    const colorMap = new Map();
+
+    // ⚡ Reduce granularity slightly (step = 16 → ~4M possible colors, safe for browsers)
     for (let i = 0; i < data.length; i += 4) {
-        let r = Math.round(data[i] / 32) * 32;
-        let g = Math.round(data[i + 1] / 32) * 32;
-        let b = Math.round(data[i + 2] / 32) * 32;
+        let r = Math.round(data[i] / 16) * 16;
+        let g = Math.round(data[i + 1] / 16) * 16;
+        let b = Math.round(data[i + 2] / 16) * 16;
         const hex = rgbToHex(r, g, b).toUpperCase();
-        colorMap[hex] = (colorMap[hex] || 0) + 1;
+        colorMap.set(hex, (colorMap.get(hex) || 0) + 1);
     }
 
-    const sorted = Object.entries(colorMap).sort((a, b) => b[1] - a[1]);
-    const newPalette = sorted.slice(0, maxColors).map(entry => entry[0]);
+    // Sare unique colors frequency ke sath
+    const sorted = Array.from(colorMap.entries()).sort((a, b) => b[1] - a[1]);
+    const newPalette = sorted.map(entry => entry[0]); // ✅ sabhi colors
 
     if (newPalette.length === 0) {
         paletteDiv.innerHTML = "<div style='color:#c00; padding:1em;'>No colors found. Try capturing a different frame or using a different video.</div>";
@@ -5419,9 +5422,10 @@ function extractColorsFromCanvas(maxColors = 20) {
         return;
     }
 
+    // Duplicate avoid karo
     videoPalette = [...new Set([...videoPalette, ...newPalette])];
     renderVideoPalette();
-    showToast(`✅ Extracted ${newPalette.length} colors`);
+    showToast(`✅ Extracted ${newPalette.length} unique colors`);
 }
 
 // Render palette (renamed)
