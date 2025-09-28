@@ -1,5 +1,3 @@
-// PickColors.js - All shared JS functions for PickColors tools
-
  window.onerror = function (msg, url, line, col, error) {
             console.error("Global Error:", msg, "at", line + ":" + col);
             alert("⚠️ Error: " + msg + " (check console)");
@@ -86,12 +84,19 @@
         }
 
         // Utility functions
-        // Convert HEX → RGB
-        function hexToRgb(hex) {
-            hex = hex.replace(/^#/, '');
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            });
+        }
+
+
+        // Color conversion utilities
+        // Utility: HEX to RGB object (for accessibility checker)
+        function hexToRgbA(hex) {
+            hex = hex.replace('#', '');
             if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
-            if (!/^[0-9A-Fa-f]{6}$/.test(hex)) return null;
-            const num = parseInt(hex, 16);
+            let num = parseInt(hex, 16);
             return {
                 r: (num >> 16) & 255,
                 g: (num >> 8) & 255,
@@ -99,16 +104,24 @@
             };
         }
 
-        // Convert RGB → HEX
-        function rgbToHex(r, g, b) {
-            return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
         }
 
-        // Convert RGB → HSL
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
         function rgbToHsl(r, g, b) {
             r /= 255; g /= 255; b /= 255;
             const max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h, s, l = (max + min) / 2;
+
             if (max === min) {
                 h = s = 0;
             } else {
@@ -119,18 +132,63 @@
                     case g: h = (b - r) / d + 2; break;
                     case b: h = (r - g) / d + 4; break;
                 }
-                h *= 60;
+                h /= 6;
             }
-            return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
         }
 
-        // Convert HSL → RGB
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+
+            const d = max - min;
+            s = max === 0 ? 0 : d / max;
+
+            if (max === min) {
+                h = 0;
+            } else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                v: Math.round(v * 100)
+            };
+        }
+
+        function rgbToCmyk(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const k = 1 - Math.max(r, g, b);
+            const c = (1 - r - k) / (1 - k) || 0;
+            const m = (1 - g - k) / (1 - k) || 0;
+            const y = (1 - b - k) / (1 - k) || 0;
+
+            return {
+                c: Math.round(c * 100),
+                m: Math.round(m * 100),
+                y: Math.round(y * 100),
+                k: Math.round(k * 100)
+            };
+        }
+
         function hslToRgb(h, s, l) {
             h /= 360; s /= 100; l /= 100;
             const c = (1 - Math.abs(2 * l - 1)) * s;
             const x = c * (1 - Math.abs((h * 6) % 2 - 1));
             const m = l - c / 2;
             let r = 0, g = 0, b = 0;
+
             if (0 <= h && h < 1 / 6) {
                 r = c; g = x; b = 0;
             } else if (1 / 6 <= h && h < 1 / 3) {
@@ -144,35 +202,17 @@
             } else if (5 / 6 <= h && h < 1) {
                 r = c; g = 0; b = x;
             }
+
             r = Math.round((r + m) * 255);
             g = Math.round((g + m) * 255);
             b = Math.round((b + m) * 255);
+
             return { r, g, b };
         }
 
-        // Copy text to clipboard
-        function copyToClipboard(text) {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(() => {
-                    if (typeof showToast === 'function') showToast('Copied to clipboard!');
-                }).catch(() => {
-                    if (typeof showToast === 'function') showToast('Copy failed');
-                });
-            } else {
-                try {
-                    const ta = document.createElement('textarea');
-                    ta.value = text;
-                    ta.style.position = 'fixed';
-                    ta.style.left = '-9999px';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    if (typeof showToast === 'function') showToast('Copied to clipboard!');
-                } catch (e) {
-                    if (typeof showToast === 'function') showToast('Copy failed');
-                }
-            }
+        function hslToHex(h, s, l) {
+            const rgb = hslToRgb(h, s, l);
+            return rgbToHex(rgb.r, rgb.g, rgb.b);
         }
 
 
@@ -279,26 +319,28 @@
         document.addEventListener('DOMContentLoaded', function () {
             const colorPickerInput = document.getElementById('colorPickerInput');
             const hexInputField = document.getElementById('hexInputField');
-            if (colorPickerInput && hexInputField) {
-                colorPickerInput.addEventListener('input', function () {
-                    const hex = colorPickerInput.value;
-                    hexInputField.value = hex;
+
+            colorPickerInput.addEventListener('input', function () {
+                const hex = colorPickerInput.value;
+                hexInputField.value = hex;
+                updateColorInfo(hex);
+            });
+
+            hexInputField.addEventListener('input', function () {
+                const hex = hexInputField.value;
+                if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+                    colorPickerInput.value = hex;
                     updateColorInfo(hex);
-                });
-                hexInputField.addEventListener('input', function () {
-                    const hex = hexInputField.value;
-                    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
-                        colorPickerInput.value = hex;
-                        updateColorInfo(hex);
-                    }
-                });
-                // Copy on clicking color values
-                document.querySelectorAll('.color-value, #colorPreview').forEach(el => {
-                    el.addEventListener('click', () => copyColorValue(el.textContent));
-                });
-                // Initialize default
-                updateColorInfo('#667eea');
-            }
+                }
+            });
+
+            // Copy on clicking color values
+            document.querySelectorAll('.color-value, #colorPreview').forEach(el => {
+                el.addEventListener('click', () => copyColorValue(el.textContent));
+            });
+
+            // Initialize default
+            updateColorInfo('#667eea');
         });
 
 
@@ -354,10 +396,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            const generateGradientBtn = document.getElementById("generateGradientBtn");
-            const addStopBtn = document.getElementById("addStopBtn");
-            if (generateGradientBtn) generateGradientBtn.addEventListener("click", generateAdvancedGradient);
-            if (addStopBtn) addStopBtn.addEventListener("click", addGradientStop);
+            document.getElementById("generateGradientBtn").addEventListener("click", generateAdvancedGradient);
+            document.getElementById("addStopBtn").addEventListener("click", addGradientStop);
         });
 
 
@@ -517,8 +557,8 @@
             else if (h < 120) { r = x; g = c; b = 0; }
             else if (h < 180) { r = 0; g = c; b = x; }
             else if (h < 240) { r = 0; g = x; b = c; }
-            else if (h < 300) { r = x; g = 0; b = c; }
-            else { r = c; g = 0; b = x; }
+            else if (h < 300) { r = c; g = 0; b = x; }
+            else { r = x; g = 0; b = c; }
             r = Math.round((r + m) * 255);
             g = Math.round((g + m) * 255);
             b = Math.round((b + m) * 255);
@@ -585,8 +625,8 @@
                 normalTextAAA: { element: document.getElementById('normalTextAAA'), threshold: 7 },
                 largeTextAAA: { element: document.getElementById('largeTextAAA'), threshold: 4.5 }
             };
+
             Object.values(badges).forEach(badge => {
-                if (!badge.element) return;
                 const passes = contrast >= badge.threshold;
                 badge.element.className = `accessibility-badge ${passes ? 'pass' : 'fail'}`;
                 badge.element.children[1].textContent = passes ?
@@ -1174,26 +1214,77 @@
         const copyBtn = document.getElementById("copyColorBtn");
         const colorPickerBtn = document.getElementById("colorPickerBtn");
         const similarColorsDiv = document.getElementById("similarColors");
-        if (colorInput && swatch && hexValue && rgbValue && hslValue && hsvValue && cmykValue && cssName && friendlyName && contrastInfo && previewWhite && previewBlack && copyBtn && colorPickerBtn && similarColorsDiv) {
-            colorInput.addEventListener("keydown", e => { if (e.key === "Enter") handleInput(); });
-            colorPickerBtn.addEventListener("click", handleInput);
-            copyBtn.addEventListener("click", () => {
-                var hex = document.getElementById("hexValue");
-                var rgb = document.getElementById("rgbValue");
-                var toCopy = hex ? hex.textContent.replace("HEX: ", "") : "";
-                if (!toCopy && rgb) toCopy = rgb.textContent.replace("RGB: ", "");
-                if (toCopy) {
-                    navigator.clipboard.writeText(toCopy).then(() => {
-                        showToast("Copied: " + toCopy);
-                    }).catch(err => {
-                        showToast("Failed to copy color!");
-                        console.error(err);
-                    });
-                } else {
-                    showToast("Nothing to copy!");
-                }
+
+        // ======= Update Display =======
+        function updateColorDisplay(rgb, closest) {
+            const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+            swatch.style.backgroundColor = hex;
+            hexValue.textContent = `HEX: ${hex}`;
+            rgbValue.textContent = `RGB: rgb(${rgb.r},${rgb.g},${rgb.b})`;
+
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+
+            hslValue.textContent = `HSL: hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;
+            hsvValue.textContent = `HSV: hsv(${hsv.h},${hsv.s}%,${hsv.v}%)`;
+            cmykValue.textContent = `CMYK: ${cmyk.c}%,${cmyk.m}%,${cmyk.y}%,${cmyk.k}%`;
+
+            cssName.textContent = `CSS Name: ${closest.name}`;
+            friendlyName.textContent = `Friendly Name: ${closest.friendly}`;
+
+            // Contrast
+            const white = { r: 255, g: 255, b: 255 }, black = { r: 0, g: 0, b: 0 };
+            const contrastW = contrastRatio(rgb, white), contrastB = contrastRatio(rgb, black);
+            const best = contrastW > contrastB ? "White Text" : "Black Text";
+            contrastInfo.textContent = `Best Contrast: ${best}`;
+
+            previewWhite.style.backgroundColor = hex;
+            previewWhite.style.color = "white";
+            previewBlack.style.backgroundColor = hex;
+            previewBlack.style.color = "black";
+
+            // Similar colors
+            similarColorsDiv.innerHTML = "";
+            const sorted = cssColors.map(c => ({ ...c, dist: colorDistance(rgb, hexToRgb(c.hex)) }))
+                .sort((a, b) => a.dist - b.dist)
+                .slice(1, 4);
+            sorted.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "similar-color-swatch";
+                div.style.backgroundColor = c.hex;
+                div.title = `${c.friendly} (${c.hex})`;
+                similarColorsDiv.appendChild(div);
             });
         }
+
+        // ======= Events =======
+        function handleInput() {
+            const rgb = parseColorInput(colorInput.value);
+            if (!rgb) { alert("Invalid format! Use HEX (#FFF or #FFFFFF) or RGB."); return; }
+            const closest = findClosestColor(rgb);
+            updateColorDisplay(rgb, closest);
+        }
+        colorInput.addEventListener("keydown", e => { if (e.key === "Enter") handleInput(); });
+        colorPickerBtn.addEventListener("click", handleInput);
+        copyBtn.addEventListener("click", () => {
+            // Prefer copying the HEX value, fallback to RGB if not found
+            var hex = document.getElementById("hexValue");
+            var rgb = document.getElementById("rgbValue");
+            var toCopy = hex ? hex.textContent.replace("HEX: ", "") : "";
+            if (!toCopy && rgb) toCopy = rgb.textContent.replace("RGB: ", "");
+            if (toCopy) {
+                navigator.clipboard.writeText(toCopy).then(() => {
+                    showToast("Copied: " + toCopy);
+                }).catch(err => {
+                    showToast("Failed to copy color!");
+                    console.error(err);
+                });
+            } else {
+                showToast("Nothing to copy!");
+            }
+        });
+
 
         // Default load
         document.addEventListener("DOMContentLoaded", () => {
@@ -1393,7 +1484,7 @@
                 a.download = "colors.json";
                 a.click();
                 URL.revokeObjectURL(url);
-                showToast("✅ JSON exported");
+                showToast("✅ JSON Exported");
             }
 
             // ✅ Export CSS Variables
@@ -1405,7 +1496,7 @@
                     if (color) cssVars += `  --color-${i + 1}: ${color};\n`;
                 });
                 cssVars += "}";
-
+                if (cssVars === ":root {\n}") return showToast("⚠️ No colors to export.");
                 const blob = new Blob([cssVars], { type: "text/css" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -1413,7 +1504,7 @@
                 a.download = "colors.css";
                 a.click();
                 URL.revokeObjectURL(url);
-                showToast("✅ CSS exported");
+                showToast("✅ CSS Exported");
             }
 
             // ✅ Copy HEX List
@@ -1827,7 +1918,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 chocolate: { colors: ["#3E2723", "#5D4037", "#795548", "#8D6E63", "#A1887F", "#D7CCC8", "#4E342E", "#6D4C41", "#8D6E63", "#A1887F", "#BCAAA4", "#D7CCC8", "#EFEBE9", "#8B4513", "#A0522D"] },
                 honey: { colors: ["#FFD700", "#FFC300", "#FFB700", "#E6AC00", "#CC9900", "#B8860B", "#DAA520", "#FFDB58", "#F0E68C", "#EEE8AA", "#BDB76B", "#9ACD32", "#FFE135", "#FFEF94", "#FFF8DC"] },
                 mint: { colors: ["#98FF98", "#AAF0D1", "#77DD77", "#00FA9A", "#66CDAA", "#20B2AA", "#7FFFD4", "#40E0D0", "#48D1CC", "#00CED1", "#5F9EA0", "#4682B4", "#B0E0E6", "#AFEEEE", "#E0FFFF"] },
-                berry: { colors: ["#8A2BE2", "#9400D3", "#9932CC", "#BA55D3", "#DA70D6", "#EE82EE", "#DDA0DD", "#D8BFD8", "#E6E6FA", "#C71585", "#DB7093", "#FF69B4", "#FF1493", "#DC143C", "#FF4500"] },
+                berry: { colors: ["#8A2BE2", "#9400D3", "#9932CC", "#BA55D3", "#DA70D6", "#EE82EE", "#DDA0DD", "#D8BFD8", "#E6E6FA", "#C71585", "#FF1493", "#FF69B4", "#FFB6C1", "#FFC0CB", "#FFCCCB"] },
                 lemon: { colors: ["#FFF44F", "#FFFF99", "#F5F5DC", "#FFEB3B", "#FFD700", "#FFC107", "#FFFF00", "#FFFACD", "#FFFACD", "#FAFAD2", "#FFF8DC", "#FFFFF0", "#FFFFE0", "#FFF8DC", "#FFFFF0"] },
                 coffee: { colors: ["#4B3832", "#854442", "#FFF4E6", "#3C2F2F", "#BE9B7B", "#DAB49D", "#6F4E37", "#8B4513", "#A0522D", "#CD853F", "#DEB887", "#F4A460", "#D2B48C", "#BC9A6A", "#C19A6B"] },
                 wine: { colors: ["#722F37", "#8B0000", "#B22222", "#A52A2A", "#D2691E", "#CD5C5C", "#DC143C", "#FF0000", "#FF6347", "#FA8072", "#E9967A", "#FFA07A", "#FFA07A", "#FFE4E1", "#FFE4E1"] },
@@ -1850,7 +1941,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ink: { colors: ["#000000", "#111111", "#222222", "#333333", "#444444", "#555555", "#191970", "#000080", "#00008B", "#0000CD", "#0000FF", "#4169E1", "#6495ED", "#4682B4", "#5F9EA0"] },
 
                 // Events
-                christmas: { colors: ["#FF0000", "#008000", "#FFD700", "#FFFFFF", "#800000", "#006400", "#DC143C", "#228B22", "#DAA520", "#F5F5DC", "#B22222", "#2E8B57", "#CD853F", "#F0F8FF", "#FFE4E1", "#FAEBD7"] },
+                christmas: { colors: ["#FF0000", "#008000", "#FFD700", "#FFFFFF", "#800000", "#006400", "#DC143C", "#228B22", "#DAA520", "#F5F5DC", "#B22222", "#2E8B57", "#CD853F", "#F0F8FF", "#FFE4E1"] },
                 halloween: { colors: ["#FF7518", "#000000", "#FFD700", "#FF4500", "#8B0000", "#4B0082", "#FF8C00", "#2F4F4F", "#DAA520", "#FFA500", "#B22222", "#800080", "#191970", "#8B008B", "#483D8B"] },
                 easter: { colors: ["#FFB6C1", "#FFDAB9", "#FFFACD", "#E6E6FA", "#B0E0E6", "#98FB98", "#FFC0CB", "#FFDAB9", "#E0FFFF", "#E6E6FA", "#ADD8E6", "#90EE90", "#FFE4E1", "#F0FFF0", "#FFF5EE"] },
                 valentines: { colors: ["#FF69B4", "#FF1493", "#DB7093", "#C71585", "#FF6F91", "#FF85A2", "#DC143C", "#FF0000", "#FFB6C1", "#FFC0CB", "#FFCCCB", "#FFE4E1", "#F0F8FF", "#FFF0F5", "#FFE4E1"] },
@@ -1879,7 +1970,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Food
                 strawberry: { colors: ["#FF4C4C", "#FF6666", "#FF9999", "#C71585", "#8B0000", "#FFB6C1", "#FF0000", "#DC143C", "#B22222", "#CD5C5C", "#F08080", "#FA8072", "#FFC0CB", "#FFE4E1", "#FFB6C1"] },
-                blueberry: { colors: ["#191970", "#000080", "#0000FF", "#4169E1", "#4682B4", "#87CEEB", "#191970", "#000080", "#0000FF", "#4169E1", "#4682B4", "#6495ED", "#B0C4DE", "#ADD8E6", "#87CEFA"] },
+                blueberry: { colors: ["#191970", "#000080", "#00008B", "#4169E1", "#4682B4", "#87CEEB", "#191970", "#000080", "#00008B", "#4169E1", "#4682B4", "#6495ED", "#B0C4DE", "#ADD8E6", "#87CEFA"] },
                 watermelon: { colors: ["#FF3B3F", "#FF6F61", "#00C853", "#2E7D32", "#81C784", "#C62828", "#FF5722", "#4CAF50", "#8BC34A", "#CDDC39", "#FF1744", "#D32F2F", "#388E3C", "#689F38", "#827717"] },
                 pumpkin: { colors: ["#FF7518", "#FF8C00", "#FFA500", "#FFD580", "#CD853F", "#8B4513", "#FF6347", "#FF4500", "#FF4500", "#FF8C00", "#FFA500", "#DAA520", "#B8860B", "#A0522D", "#8B4513"] },
                 grape: { colors: ["#4B0082", "#800080", "#8A2BE2", "#9400D3", "#9932CC", "#BA55D3", "#4B0082", "#800080", "#8A2BE2", "#9400D3", "#9932CC", "#BA55D3", "#DA70D6", "#EE82EE", "#DDA0DD"] },
@@ -2234,3 +2325,147 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+
+const toolMeta = {
+  // ==================== TOOLS ====================
+  "color-picker": {
+    title: "Color Picker – HEX, RGB, HSL, HSV, CMYK Converter",
+    description: "Free online color picker to convert HEX, RGB, HSL, HSV, and CMYK instantly. Ideal for designers and developers creating accurate palettes.",
+    keywords: "color picker online, hex to rgb, rgb to hex, hsl converter, hsv to hex, cmyk to rgb, color converter free, web design colors, css colors"
+  },
+  "gradient-maker": {
+    title: "CSS Gradient Generator – Linear & Radial Online",
+    description: "Create linear and radial CSS gradients with multiple color stops. Free gradient maker for web design, UI, and graphic design projects.",
+    keywords: "css gradient generator, gradient maker online, linear gradient, radial gradient, background gradient css, ui design gradients"
+  },
+  "color-harmonies": {
+    title: "Color Harmonies – Complementary & Triadic Palettes",
+    description: "Find color harmonies like complementary, triadic, tetradic, split, and analogous schemes. Free tool for designers and creative projects.",
+    keywords: "color harmonies tool, triadic colors, complementary colors, tetradic scheme, split complementary palette, color wheel online, color palettes"
+  },
+  "contrast-checker": {
+    title: "Contrast Checker – WCAG Color Accessibility",
+    description: "Free WCAG contrast checker to test text and background colors. Ensure accessibility with AA and AAA compliance for websites.",
+    keywords: "contrast checker online, wcag contrast ratio, accessibility color tool, text readability, background contrast checker"
+  },
+  "image-color-extractor": {
+    title: "Image Color Extractor – Palettes from Pictures",
+    description: "Upload an image to extract dominant colors and generate palettes. Free tool for designers, photographers, and digital artists.",
+    keywords: "image color extractor, extract colors from image, photo color palette, image to color scheme, palette generator online"
+  },
+  "name-that-color": {
+    title: "Name That Color – Closest CSS Name Finder",
+    description: "Enter HEX or RGB values to find the closest CSS color name and friendly label. Useful tool for web designers and developers.",
+    keywords: "css color names, name that color, hex color names, rgb color names, closest color finder, html css colors list"
+  },
+  "color-finder": {
+    title: "Color Finder – Generate Shades & Palettes",
+    description: "Enter HEX or RGB code to generate similar shades, harmonies, and color palettes. Export results in CSS, JSON, or HEX.",
+    keywords: "color finder by code, hex to palette, rgb to shades, color scheme generator, hex shade generator, color palette maker online"
+  },
+  "video-color-extractor": {
+    title: "Video Color Extractor – Palettes from Video/GIF",
+    description: "Upload a video or GIF to extract color palettes by frame or overall. Perfect for filmmakers, social media creators, and designers.",
+    keywords: "video color extractor, gif color extractor, extract colors from video, video color palette, movie color analyzer"
+  },
+  "readability-tester": {
+    title: "Readability Tester – Text on Background Colors",
+    description: "Check text readability against background colors with instant contrast evaluation. Improve UX and ensure content clarity.",
+    keywords: "readability tester online, text visibility checker, color readability test, ui ux readability tool"
+  },
+  "mood-board-generator": {
+    title: "Mood Board Generator – Free Online Design Boards",
+    description: "Create mood boards from colors, themes, and images. A free online tool for design inspiration, branding, and creative projects.",
+    keywords: "mood board generator online, create mood board free, design inspiration board, brand mood boards"
+  },
+  "random-palette-generator": {
+    title: "Random Palette Generator – Free Color Inspiration",
+    description: "Get unique random color palettes instantly for design inspiration. Free tool for websites, branding, and digital art projects.",
+    keywords: "random color palette generator, color inspiration tool, palette maker free, random colors for web design"
+  },
+
+  // ==================== RESOURCES ====================
+  "color-theory-guide": {
+    title: "Color Theory Guide – Basics & Design Tips",
+    description: "Learn color theory basics, psychology, and how to apply color schemes in design, branding, and marketing. Free beginner’s guide.",
+    keywords: "color theory guide, color wheel explained, primary colors, secondary colors, color psychology in design, complementary colors, triadic scheme"
+  },
+  "css-color-names": {
+    title: "CSS Color Names – Full Web Colors List",
+    description: "Explore the full list of CSS color names with HEX and RGB codes. A handy reference for designers and developers.",
+    keywords: "css color names list, html color names, web safe colors, css colors with hex, rgb color codes, html css named colors"
+  },
+  "accessibility-tools": {
+    title: "Accessibility Tools – Contrast & Readability",
+    description: "Free accessibility tools including contrast checker, readability tester, and color blindness simulation. Ensure WCAG compliance.",
+    keywords: "accessibility tools online, color blindness simulator, wcag checker, text contrast checker, web accessibility test"
+  },
+  "color-conversion-tools": {
+    title: "Color Conversion – HEX, RGB, HSL, HSV, CMYK",
+    description: "Convert between HEX, RGB, HSL, HSV, and CMYK instantly with free online color conversion tools for web, print, and design.",
+    keywords: "hex to rgb, rgb to hex, hsl to hex, hsv converter, cmyk to hex, color conversion online, color value converter free"
+  },
+
+  // ==================== COMPANY ====================
+  "about-us": {
+    title: "About PickColors – Our Mission",
+    description: "Learn about PickColors, our mission to create free and professional online color tools for designers and developers.",
+    keywords: "about pickcolors, color tools company, online design tools, free color generators, hex converter website"
+  },
+  "contact": {
+    title: "Contact PickColors – Support & Inquiries",
+    description: "Contact the PickColors team for support, feedback, or partnership opportunities. We’re here to help with your design needs.",
+    keywords: "contact pickcolors, design tool support, business inquiries color tools"
+  },
+  "privacy-policy": {
+    title: "Privacy Policy – PickColors",
+    description: "Read PickColors' Privacy Policy to understand how we collect, use, and protect your data when using our free tools.",
+    keywords: "pickcolors privacy policy, website privacy, data usage policy, online tools privacy terms"
+  },
+  "terms-of-service": {
+    title: "Terms of Service – PickColors",
+    description: "Review the Terms of Service for using PickColors tools, including rules, data usage, and user responsibilities.",
+    keywords: "pickcolors terms of service, website usage rules, color tool guidelines, free online tools terms"
+  }
+}
+
+// ==================== PAGE SHOW FUNCTION ====================
+function showPage(id, updateHash = true) {
+    // Hide all pages
+    document.querySelectorAll(".page").forEach(page => page.style.display = "none");
+
+    // Show requested page
+    const pageToShow = document.getElementById(id);
+    if (pageToShow) {
+        pageToShow.style.display = "block";
+        if (updateHash) window.location.hash = id;
+    }
+
+    // Update navigation active state
+    document.querySelectorAll("nav .nav-links a").forEach(link => link.classList.remove("active"));
+    document.querySelector(`nav .nav-links a[href="#${id}"]`)?.classList.add("active");
+
+    // Update meta dynamically
+    setMeta(id);
+}
+
+// ==================== DEFAULT PAGE ON LOAD ====================
+document.addEventListener("DOMContentLoaded", () => {
+    const hash = window.location.hash.substring(1);
+    if (hash && toolMeta[hash]) {
+        showPage(hash, false); // Show page from hash and update meta
+    } else {
+        showPage("home", false); // Default page
+    }
+});
+
+// ==================== LOGO CLICK FUNCTION ====================
+function goHome() {
+    showPage("home", false);   // Show home page without hash
+    history.pushState("", document.title, "/"); // Clean URL
+}
+
+// Example usage
+// showPage("color-picker");
+
