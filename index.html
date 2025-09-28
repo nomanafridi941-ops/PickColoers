@@ -2241,9 +2241,12 @@ body {
     <header>
   <nav class="container">
     <!-- ✅ Only image logo -->
-<a href="/" class="logo" onclick="event.preventDefault(); history.pushState(null, '', '/'); showPage('home');">
+
+<a href="/" class="logo"
+   onclick="event.preventDefault(); history.replaceState(null, '', '/'); showPage('home');">
   <img src="logo.webp" alt="PickColors Logo" width="200">
 </a>
+
 
 
 
@@ -2568,13 +2571,6 @@ body {
 
         <p>👉 Try the <strong>Advanced Gradient Maker</strong> today and design professional, colorful backgrounds in seconds!</p>
     </div>
-
-    <!-- ✅ Bottom Ad -->
-    <div class="ad-container" style="text-align:center; margin:20px 0;">
-        <div class="ad-card" style="width:728px; height:90px; margin:0 auto;">
-            <div class="ad-placeholder">
-                <strong>Ad Placeholder</strong> 728 x 90
-            </div>
         </div>
     </div>
 </div>
