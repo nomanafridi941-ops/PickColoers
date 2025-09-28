@@ -2239,76 +2239,70 @@ body {
 
     </style>
     <header>
-        <nav class="container">
-            <!-- ✅ Only image logo -->
-            <a href="#" class="logo" onclick="showPage('home')">
-<img src="/logo.webp" alt="PickColors Logo" width="200">
-            </a>
+  <nav class="container">
+    <!-- ✅ Only image logo -->
+    <a href="#home" class="logo" onclick="showPage('home')">
+      <img src="logo.webp" alt="PickColors Logo" width="200">
+    </a>
 
-            <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#" onclick="showPage('home')" class="active">Home</a></li>
-                <li class="dropdown" id="toolsDropdown">
-                    <a href="home" class="dropdown-toggle" onclick="toggleToolsDropdown(event)">
-                        Tools <span class="dropdown-arrow">▼</span>
-                    </a>
-                    <ul class="dropdown-menu">
+    <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" onclick="showPage('home')" class="active">Home</a></li>
+      <li class="dropdown" id="toolsDropdown">
+        <a href="#tools" class="dropdown-toggle" onclick="toggleToolsDropdown(event)">
+          Tools <span class="dropdown-arrow">▼</span>
+        </a>
+        <ul class="dropdown-menu">
 
-                        <!-- 🎨 Conversion & Analysis -->
-                        <li class="submenu">
-                            <a href="#">🎨 Conversion & Analysis ▸</a>
-                            <ul class="submenu-menu">
-<li><a href="color-picker" onclick="showPage('color-picker')">🎨 Color Picker & Converter</a></li>
-                                <li><a href="name-that-color" onclick="showPage('name-that-color')">🎨 Name That Color</a></li>
-                                <li><a href="color-finder-page" onclick="showPage('color-finder-page')">🔍 Color Finder by Code</a></li>
-
-
-                            </ul>
-                        </li>
-
-                        <!-- 🌈 Palette & Gradient -->
-                        <li class="submenu">
-                            <a href="#">🌈 Palette & Gradient ▸</a>
-                            <ul class="submenu-menu">
-                                <li><a href="#" onclick="showPage('gradient-maker')">🔄 Gradient Maker</a></li>
-                                <li><a href="#" onclick="showPage('color-harmonies')">🎯 Color Harmonies</a></li>
-                                <li><a href="#" onclick="showPage('image-color-extractor')">🖌️ Image ColorExtractor</a>
-                                </li>
-                                <li><a href="#" onclick="showPage('video-color-extractor')">🎬 Color Palette from
-                                        Video/GIF</a></li>
-                            </ul>
-                        </li>
-
-                        <!-- ♿ Accessibility & Usability -->
-                        <li class="submenu">
-                            <a href="#">♿ Accessibility & Usability ▸</a>
-                            <ul class="submenu-menu">
-                                <li><a href="#" onclick="showPage('contrast-checker')">♿ Contrast Checker</a></li>
-                                <li><a href="#" onclick="showPage('readability-tester-page')">🧭 Readability Tester</a>
-                                </li>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- 🎭 Creative & Mood -->
-                <li class="submenu">
-                    <a href="#">🎭 Creative & Mood ▸</a>
-                    <ul class="submenu-menu">
-                        <li><a href="#" onclick="showPage('mood-board-generator-page')">🎨 Mood Board Generator</a></li>
-                        <li><a href="#" onclick="showPage('random-palette-inspiration-page')">🎲 Random
-                                PaletteInspiration</a></li>
-                    </ul>
-                </li>
+          <!-- 🎨 Conversion & Analysis -->
+          <li class="submenu">
+            <a href="#">🎨 Conversion & Analysis ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#color-picker" onclick="showPage('color-picker')">🎨 Color Picker & Converter</a></li>
+              <li><a href="#name-that-color" onclick="showPage('name-that-color')">🎨 Name That Color</a></li>
+              <li><a href="#color-finder-page" onclick="showPage('color-finder-page')">🔍 Color Finder by Code</a></li>
             </ul>
-            </li>
+          </li>
 
-            <li><a href="#" onclick="showPage('about')">About</a></li>
-            <li><a href="#" onclick="showPage('contact')">Contact</a></li>
-            <li><a href="#" onclick="showPage('privacy')">Privacy</a></li>
-            <li><a href="#" onclick="showPage('terms')">Terms</a></li>
+          <!-- 🌈 Palette & Gradient -->
+          <li class="submenu">
+            <a href="#">🌈 Palette & Gradient ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#gradient-maker" onclick="showPage('gradient-maker')">🔄 Gradient Maker</a></li>
+              <li><a href="#color-harmonies" onclick="showPage('color-harmonies')">🎯 Color Harmonies</a></li>
+              <li><a href="#image-color-extractor" onclick="showPage('image-color-extractor')">🖌️ Image Color Extractor</a></li>
+              <li><a href="#video-color-extractor" onclick="showPage('video-color-extractor')">🎬 Color Palette from Video/GIF</a></li>
             </ul>
-        </nav>
-    </header>
+          </li>
+
+          <!-- ♿ Accessibility & Usability -->
+          <li class="submenu">
+            <a href="#">♿ Accessibility & Usability ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#contrast-checker" onclick="showPage('contrast-checker')">♿ Contrast Checker</a></li>
+              <li><a href="#readability-tester-page" onclick="showPage('readability-tester-page')">🧭 Readability Tester</a></li>
+            </ul>
+          </li>
+
+          <!-- 🎭 Creative & Mood -->
+          <li class="submenu">
+            <a href="#">🎭 Creative & Mood ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#mood-board-generator-page" onclick="showPage('mood-board-generator-page')">🎨 Mood Board Generator</a></li>
+              <li><a href="#random-palette-inspiration-page" onclick="showPage('random-palette-inspiration-page')">🎲 Random Palette Inspiration</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+
+      <li><a href="#about" onclick="showPage('about')">About</a></li>
+      <li><a href="#contact" onclick="showPage('contact')">Contact</a></li>
+      <li><a href="#privacy" onclick="showPage('privacy')">Privacy</a></li>
+      <li><a href="#terms" onclick="showPage('terms')">Terms</a></li>
+    </ul>
+  </nav>
+</header>
+
     <!-- Global Top Ad -->
     <div class="ad-container" style="text-align:center; margin:20px 0;">
             <div class="ad-card" style="width:728px; height:90px;">
