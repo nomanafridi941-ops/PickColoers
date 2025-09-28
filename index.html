@@ -2242,10 +2242,10 @@ body {
   <nav class="container">
     <!-- ✅ Only image logo -->
 
-<a href="/" class="logo"
-   onclick="event.preventDefault(); history.replaceState(null, '', '/'); showPage('home');">
+<a href="/" class="logo" onclick="showPage('home', false); event.preventDefault();">
   <img src="logo.webp" alt="PickColors Logo" width="200">
 </a>
+
 
 
 
@@ -5904,28 +5904,31 @@ document.addEventListener("DOMContentLoaded", () => {
         /* 🎲 Random Palette Inspiration END (JS) */
 
   // Default page dikhana (Home ya pehla tool)
-  document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.hash) {
-      showPage(window.location.hash.substring(1));
-    } else {
-      showPage("home"); // default page
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.location.hash) {
+    showPage(window.location.hash.substring(1));
+  } else {
+    showPage("home", false); // default page, URL hash update NA karo
+  }
+});
+
+function showPage(id, updateHash = true) {
+  // Sab pages hide karo
+  document.querySelectorAll(".page").forEach(page => {
+    page.style.display = "none";
   });
 
-  function showPage(id) {
-    // Sab pages hide karo
-    document.querySelectorAll(".page").forEach(page => {
-      page.style.display = "none";
-    });
-
-    // Jo page chahiye usko show karo
-    const pageToShow = document.getElementById(id);
-    if (pageToShow) {
-      pageToShow.style.display = "block";
-      // ✅ URL hash update karo
+  // Jo page chahiye usko show karo
+  const pageToShow = document.getElementById(id);
+  if (pageToShow) {
+    pageToShow.style.display = "block";
+    // ✅ Sirf tab URL hash update karo jab explicitly chahiye
+    if (updateHash) {
       window.location.hash = id;
     }
   }
+}
+
 
 
 </script>
