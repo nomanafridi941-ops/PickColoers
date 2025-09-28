@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrast Checker – WCAG Accessibility Color Tool Online</title>
+  <meta name="description" content="Free WCAG contrast checker to test text and background colors. Ensure accessibility with AA and AAA compliance for websites and apps.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="../PickColors.css">
+</head>
+<body>
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo">PickColors</a>
+    <ul class="nav-links">
+      <li><a href="color-picker.html">Color Picker</a></li>
+      <li><a href="gradient-maker.html">Gradient Maker</a></li>
+      <li><a href="color-harmonies.html">Color Harmonies</a></li>
+      <li><a href="contrast-checker.html">Contrast Checker</a></li>
+      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
+      <li><a href="name-that-color.html">Name That Color</a></li>
+      <li><a href="color-finder.html">Color Finder</a></li>
+      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
+      <li><a href="readability-tester.html">Readability Tester</a></li>
+      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
+      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
+    </ul>
+  </nav>
+</header>
+<div id="contrast-checker" class="page">
+  <div class="tool-container">
+    <div class="tool-header">
+      <h2>♿ Accessibility Contrast Checker</h2>
+      <p>Ensure your color combinations meet WCAG accessibility guidelines</p>
+    </div>
+    <div class="tool-content">
+      <div class="input-section">
+        <h3>Color Combination</h3>
+        <div class="color-input-group">
+          <label>Foreground (Text) Color:</label>
+          <input type="color" id="foregroundColor" value="#333333">
+        </div>
+        <div class="color-input-group">
+          <label>Background Color:</label>
+          <input type="color" id="backgroundColor" value="#ffffff">
+        </div>
+        <button class="btn" onclick="checkContrast()">Check Contrast</button>
+      </div>
+      <div class="output-section">
+        <h3>Contrast Results</h3>
+        <div class="contrast-result" id="contrastPreview">Sample text with selected colors</div>
+        <div class="color-info">
+          <h4>Contrast Ratio: <span id="contrastRatio">21:1</span></h4>
+          <div class="accessibility-info">
+            <div class="accessibility-badge pass" id="normalText"><div>Normal Text</div><div>AA ✓</div></div>
+            <div class="accessibility-badge pass" id="largeText"><div>Large Text</div><div>AA ✓</div></div>
+            <div class="accessibility-badge pass" id="normalTextAAA"><div>Normal Text</div><div>AAA ✓</div></div>
+            <div class="accessibility-badge pass" id="largeTextAAA"><div>Large Text</div><div>AAA ✓</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+    <h2>♿ Accessibility Contrast Checker – Ensure Readable Designs</h2>
+    <p>The <strong>Accessibility Contrast Checker</strong> ensures your text and background color combinations comply with <strong>WCAG accessibility guidelines</strong>. This tool helps web designers, developers, and content creators make sure their designs are easy to read for everyone, including people with visual impairments.</p>
+    <h3>🔑 Key Features</h3>
+    <ul>
+      <li>Checks color contrast ratios in real time</li>
+      <li>WCAG AA and AAA compliance indicators</li>
+      <li>Preview text with selected colors</li>
+      <li>Helps design accessible websites and apps</li>
+      <li>Quick validation for designers & developers</li>
+    </ul>
+    <h3>✅ Why Use It?</h3>
+    <p>Accessibility is not just a requirement but also a <strong>best practice in modern web design</strong>. Using this tool, you can ensure that your websites meet <strong>WCAG 2.1 guidelines</strong>, improve usability, and provide an inclusive experience for all users.</p>
+    <p>👉 Try the <strong>Contrast Checker</strong> now and make your designs more accessible!</p>
+  </div>
+</div>
+</body>
+</html>

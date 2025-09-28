@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Finder by Code – Generate Similar Shades & Palettes</title>
+  <meta name="description" content="Enter a HEX or RGB code to find similar shades, harmonies, and color palettes. Export results in CSS, JSON, or HEX for design projects.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="../PickColors.css">
+</head>
+<body>
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo">PickColors</a>
+    <ul class="nav-links">
+      <li><a href="color-picker.html">Color Picker</a></li>
+      <li><a href="gradient-maker.html">Gradient Maker</a></li>
+      <li><a href="color-harmonies.html">Color Harmonies</a></li>
+      <li><a href="contrast-checker.html">Contrast Checker</a></li>
+      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
+      <li><a href="name-that-color.html">Name That Color</a></li>
+      <li><a href="color-finder.html">Color Finder</a></li>
+      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
+      <li><a href="readability-tester.html">Readability Tester</a></li>
+      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
+      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
+    </ul>
+  </nav>
+</header>
+<div id="color-finder-page" class="page">
+  <div class="tool-container">
+    <div class="tool-header">
+      <h2>🔍 Color Finder by Code</h2>
+      <p>Enter a HEX or RGB(A) color code and discover similar shades, palettes, and harmonies for design use.</p>
+    </div>
+    <div class="tool-content">
+      <div class="input-section">
+        <h3>Color Input</h3>
+        <div class="color-input-group">
+          <label>Pick a Color:</label>
+          <input type="color" id="cfPicker" class="cf-picker" value="#4A90E2">
+        </div>
+        <div class="color-input-group">
+          <label>Enter HEX or RGB(A):</label>
+          <input type="text" id="cfColorInput" placeholder="#4A90E2 or rgb(74,144,226)">
+        </div>
+        <div class="color-input-group">
+          <label>Number of Shades:</label>
+          <input type="number" id="cfCount" value="12" min="4" max="50">
+        </div>
+        <button class="btn" id="cfGenerate">Generate Shades</button>
+      </div>
+      <div class="output-section">
+        <h3>Original Color</h3>
+        <div class="color-display" id="cfOriginalSwatch">#4A90E2</div>
+        <div class="color-info">
+          <div><strong>HEX:</strong> <span id="cfOriginalHex">#4A90E2</span></div>
+          <div><strong>RGB:</strong> <span id="cfOriginalRgb">rgb(74,144,226)</span></div>
+        </div>
+        <h3>Similar Shades</h3>
+        <div id="cfShadesGrid" class="palette-grid"></div>
+        <h3>Saved Palette</h3>
+        <div id="cfPalette" class="palette-grid"></div>
+        <div class="palette-actions">
+          <button class="btn outline" id="cfExportJSON">Export JSON</button>
+          <button class="btn outline" id="cfExportCSS">Export CSS Variables</button>
+          <button class="btn outline" id="cfCopyList">Copy HEX List</button>
+          <button class="btn danger" id="cfClearPalette">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+    <h2>🔍 Color Finder by Code – Generate Shades & Palettes</h2>
+    <p>The <strong>Color Finder by Code</strong> is a powerful tool that takes a <strong>HEX or RGB(A)</strong> color value and generates <strong>similar shades, palettes, and harmonies</strong>. It’s an essential tool for web designers, UI developers, and digital artists.</p>
+    <h3>🔑 Key Features</h3>
+    <ul>
+      <li>Generate multiple shades from a single color</li>
+      <li>Supports HEX and RGB(A) input formats</li>
+      <li>Preview palettes in real time</li>
+      <li>Export palettes as JSON or CSS variables</li>
+      <li>Save and copy HEX lists for quick use</li>
+    </ul>
+    <h3>✅ Why Use It?</h3>
+    <p>Picking the right shades is essential for <strong>UI/UX design</strong>. This tool makes it easy to create harmonious palettes from a single color, helping you speed up your workflow and maintain design consistency.</p>
+    <p>👉 Try the <strong>Color Finder by Code</strong> today and generate beautiful palettes in seconds!</p>
+  </div>
+</div>
+</body>
+</html>

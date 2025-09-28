@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Color Picker – HEX, RGB, HSL, HSV, CMYK Converter Free</title>
+  <meta name="description" content="Free online color picker to convert HEX, RGB, HSL, HSV, CMYK instantly. Perfect for designers, developers, and digital artists creating accurate color palettes.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="../PickColors.css">
+</head>
+<body>
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo">PickColors</a>
+    <ul class="nav-links">
+      <li><a href="color-picker.html">Color Picker</a></li>
+      <li><a href="gradient-maker.html">Gradient Maker</a></li>
+      <li><a href="color-harmonies.html">Color Harmonies</a></li>
+      <li><a href="contrast-checker.html">Contrast Checker</a></li>
+      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
+      <li><a href="name-that-color.html">Name That Color</a></li>
+      <li><a href="color-finder.html">Color Finder</a></li>
+      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
+      <li><a href="readability-tester.html">Readability Tester</a></li>
+      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
+      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
+    </ul>
+  </nav>
+</header>
+<div id="color-picker" class="page">
+  <div class="tool-container">
+    <div class="tool-header">
+      <h2>🎨 Advanced Color Picker</h2>
+      <p>Professional color conversion tool supporting HEX, RGB, HSL, HSV, and CMYK formats</p>
+    </div>
+    <div class="tool-content">
+      <!-- Input Section -->
+      <div class="input-section">
+        <h3>Color Input</h3>
+        <div class="color-input-group">
+          <label>Visual Color Picker:</label>
+          <input type="color" id="colorPickerInput" value="#667eea">
+        </div>
+        <div class="color-input-group">
+          <label>HEX Code:</label>
+          <input type="text" id="hexInputField" placeholder="#667eea" value="#667eea">
+        </div>
+        <div class="color-input-group">
+          <label>RGB Values:</label>
+          <input type="text" id="rgbInputField" placeholder="rgb(102, 126, 234)">
+        </div>
+        <div class="color-input-group">
+          <label>HSL Values:</label>
+          <input type="text" id="hslInputField" placeholder="hsl(227, 75%, 66%)">
+        </div>
+      </div>
+      <!-- Output Section -->
+      <div class="output-section">
+        <h3>Color Preview & Information</h3>
+        <div class="color-display" id="colorPreview" onclick="copyColorValue(this.textContent)">#667EEA</div>
+        <div class="color-info">
+          <h4>All Color Formats</h4>
+          <div class="color-value" onclick="copyColorValue(this.children[1].textContent)"><strong>HEX:</strong> <span id="hexOutput">#667EEA</span></div>
+          <div class="color-value" onclick="copyColorValue(this.children[1].textContent)"><strong>RGB:</strong> <span id="rgbOutput">rgb(102, 126, 234)</span></div>
+          <div class="color-value" onclick="copyColorValue(this.children[1].textContent)"><strong>HSL:</strong> <span id="hslOutput">hsl(227, 75%, 66%)</span></div>
+          <div class="color-value" onclick="copyColorValue(this.children[1].textContent)"><strong>HSV:</strong> <span id="hsvOutput">hsv(227, 56%, 92%)</span></div>
+          <div class="color-value" onclick="copyColorValue(this.children[1].textContent)"><strong>CMYK:</strong> <span id="cmykOutput">cmyk(56%, 46%, 0%, 8%)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+    <h2>🎨 Advanced Color Picker – Smart Tool for Perfect Colors</h2>
+    <p>The <strong>Advanced Color Picker</strong> is a professional tool for designers and developers to choose, test, and convert colors with precision. It supports <strong>HEX, RGB, HSL, and HSV formats</strong>, making it ideal for web design, UI/UX projects, and graphic creation.</p>
+    <h3>🔑 Key Features</h3>
+    <ul>
+      <li>Real-time color preview</li>
+      <li>HEX ↔ RGB ↔ HSL conversion</li>
+      <li>Save custom palettes</li>
+      <li>Gradient and harmony support</li>
+      <li>Accessibility-friendly (contrast check ready)</li>
+    </ul>
+    <h3>✅ Why Use It?</h3>
+    <p>Whether you’re a <strong>designer, developer, or digital artist</strong>, the Advanced Color Picker helps you create stunning color schemes quickly. It saves time, improves accuracy, and ensures professional results.</p>
+    <p>👉 Try the <strong>Advanced Color Picker</strong> now and bring your ideas to life with perfect colors!</p>
+  </div>
+</div>
+</body>
+</html>

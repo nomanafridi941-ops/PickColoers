@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Name That Color – Find Closest CSS Color Name by HEX or RGB</title>
+  <meta name="description" content="Enter HEX or RGB color values to find the closest CSS color name and friendly color label. Great tool for designers and developers.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="../PickColors.css">
+</head>
+<body>
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo">PickColors</a>
+    <ul class="nav-links">
+      <li><a href="color-picker.html">Color Picker</a></li>
+      <li><a href="gradient-maker.html">Gradient Maker</a></li>
+      <li><a href="color-harmonies.html">Color Harmonies</a></li>
+      <li><a href="contrast-checker.html">Contrast Checker</a></li>
+      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
+      <li><a href="name-that-color.html">Name That Color</a></li>
+      <li><a href="color-finder.html">Color Finder</a></li>
+      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
+      <li><a href="readability-tester.html">Readability Tester</a></li>
+      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
+      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
+    </ul>
+  </nav>
+</header>
+<div id="name-that-color" class="page">
+  <div class="tool-container">
+    <div class="tool-header">
+      <h2>🎨 Name That Color</h2>
+      <p>Enter a HEX or RGB/RGBA color to find its closest CSS name and friendly label. Perfect for designers and developers.</p>
+    </div>
+    <div class="tool-content">
+      <div class="input-section">
+        <label class="color-input-label">Enter Color Value</label>
+        <input type="text" id="colorInput" class="color-input-field" placeholder="#FF5733 or rgb(255,87,51)">
+        <button class="color-picker-btn" id="colorPickerBtn">Pick Color</button>
+      </div>
+      <div class="output-section">
+        <h3>Color Result</h3>
+        <div class="color-result-section">
+          <div class="color-swatch" id="colorSwatch"></div>
+          <div class="color-info" id="colorInfo">
+            <span id="hexValue">HEX: #FFFFFF</span>
+            <span id="rgbValue">RGB: rgb(255,255,255)</span>
+            <span id="hslValue">HSL: hsl(0,0%,100%)</span>
+            <span id="hsvValue">HSV: hsv(0,0%,100%)</span>
+            <span id="cmykValue">CMYK: 0%,0%,0%,0%</span>
+            <span id="cssName">CSS Name: White</span>
+            <span id="friendlyName">Friendly Name: Pure White</span>
+            <span id="contrastInfo">Best Contrast: Black Text</span>
+          </div>
+          <button class="copy-btn" id="copyColorBtn">Copy Color</button>
+          <div class="preview-section">
+            <div class="preview-box" id="previewWhite">White Text Example</div>
+            <div class="preview-box" id="previewBlack">Black Text Example</div>
+          </div>
+        </div>
+        <div class="similar-colors-section" id="similarColors"></div>
+      </div>
+    </div>
+  </div>
+  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+    <h2>🎨 Name That Color – Identify Any Color Instantly</h2>
+    <p>The <strong>Name That Color Tool</strong> allows you to enter a <strong>HEX</strong> or <strong>RGB/RGBA</strong> code and instantly find its closest <strong>CSS color name</strong> along with a friendly label. Perfect for designers, developers, and anyone working with colors.</p>
+    <h3>🔑 Key Features</h3>
+    <ul>
+      <li>Find closest CSS color names from HEX or RGB values</li>
+      <li>Shows friendly labels for easier understanding</li>
+      <li>Provides contrast suggestions (best text color)</li>
+      <li>Preview examples with white and black text</li>
+      <li>Explore similar color variations</li>
+    </ul>
+    <h3>✅ Why Use It?</h3>
+    <p>Designers often work with <strong>HEX codes</strong>, but remembering their names can be tricky. This tool makes it easy to match any code to its <strong>official CSS name</strong> and find the best contrast options for accessibility.</p>
+    <p>👉 Try the <strong>Name That Color Tool</strong> now and make color identification effortless!</p>
+  </div>
+</div>
+</body>
+</html>
