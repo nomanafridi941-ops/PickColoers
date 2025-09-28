@@ -6176,8 +6176,9 @@ const toolMeta = {
     description: "Review the Terms of Service for using PickColors tools, including rules, data usage, and user responsibilities.",
     keywords: "pickcolors terms of service, website usage rules, color tool guidelines, free online tools terms"
   }
-};
+}
 
+// ==================== PAGE SHOW FUNCTION ====================
 function showPage(id, updateHash = true) {
     // Hide all pages
     document.querySelectorAll(".page").forEach(page => page.style.display = "none");
@@ -6193,27 +6194,25 @@ function showPage(id, updateHash = true) {
     document.querySelectorAll("nav .nav-links a").forEach(link => link.classList.remove("active"));
     document.querySelector(`nav .nav-links a[href="#${id}"]`)?.classList.add("active");
 
-    // ✅ Dynamic meta update
-    if (toolMeta[id]) {
-        document.title = toolMeta[id].title;
-
-        const descMeta = document.querySelector('meta[name="description"]');
-        if (descMeta) {
-            descMeta.setAttribute("content", toolMeta[id].description);
-        }
-
-        let keywordsMeta = document.querySelector('meta[name="keywords"]');
-        if (!keywordsMeta) {
-            keywordsMeta = document.createElement('meta');
-            keywordsMeta.setAttribute("name", "keywords");
-            document.head.appendChild(keywordsMeta);
-        }
-        keywordsMeta.setAttribute("content", toolMeta[id].keywords);
-    }
+    // Update meta dynamically
+    setMeta(id);
 }
 
-// Example usage
-// showPage("color-picker");
+// ==================== DEFAULT PAGE ON LOAD ====================
+document.addEventListener("DOMContentLoaded", () => {
+    const hash = window.location.hash.substring(1);
+    if (hash && toolMeta[hash]) {
+        showPage(hash, false); // Show page from hash and update meta
+    } else {
+        showPage("home", false); // Default page
+    }
+});
+
+// ==================== LOGO CLICK FUNCTION ====================
+function goHome() {
+    showPage("home", false);   // Show home page without hash
+    history.pushState("", document.title, "/"); // Clean URL
+}
 
 
 		
