@@ -3,74 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Color Extractor – Generate Color Palettes from Images</title>
-  <meta name="description" content="Upload an image to extract dominant colors and generate palettes instantly. Free online tool for designers, photographers, and digital artists.">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="stylesheet" href="../PickColors.css">
+  <title>Image Color Extractor – Palettes from Pictures</title>
+  <meta name="description" content="Upload an image to extract dominant colors and generate palettes. Free tool for designers, photographers, and digital artists.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <nav class="container">
-    <a href="index.html" class="logo">PickColors</a>
-    <ul class="nav-links">
-      <li><a href="color-picker.html">Color Picker</a></li>
-      <li><a href="gradient-maker.html">Gradient Maker</a></li>
-      <li><a href="color-harmonies.html">Color Harmonies</a></li>
-      <li><a href="contrast-checker.html">Contrast Checker</a></li>
-      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
-      <li><a href="name-that-color.html">Name That Color</a></li>
-      <li><a href="color-finder.html">Color Finder</a></li>
-      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
-      <li><a href="readability-tester.html">Readability Tester</a></li>
-      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
-      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
-    </ul>
-  </nav>
-</header>
+  <!-- ...existing code for image color extractor tool copied from PickColors.html... -->
+        <!-- 🖌️ Image Color Extractor page -->
 <div id="image-color-extractor" class="page">
-  <div class="tool-container">
-    <div class="tool-header">
-      <h2>🖌️ Image Color Extractor</h2>
-      <p>Upload an image to extract dominant colors automatically or pick colors manually by clicking on the image.</p>
-    </div>
-    <div class="tool-content">
-      <div class="input-section">
-        <div class="image-upload-box" id="imageUploadBox">
-          <div class="image-upload-icon">🖼️</div>
-          <div class="image-upload-label">Upload or Drag & Drop Image</div>
-          <div class="image-upload-desc">PNG, JPG, JPEG, GIF • Max 5MB</div>
-          <input type="file" id="imageUpload" accept="image/*" />
+    <div class="tool-container">
+        <div class="tool-header">
+            <h2>🖌️ Image Color Extractor</h2>
+            <p>Upload an image to extract dominant colors automatically or pick colors manually by clicking on
+                the image.</p>
         </div>
-        <canvas id="imageCanvas"></canvas>
-      </div>
-      <div class="output-section">
-        <h3>🎨 Extracted Palette</h3>
-        <div id="extractedPalette" class="palette-grid"></div>
-        <div class="palette-actions">
-          <button id="extractAllColorsBtn">🎨 Extract All Colors</button>
-          <button id="exportJSONBtn">Export JSON</button>
-          <button id="exportCSSBtn">Export CSS Vars</button>
-          <button id="copyHEXBtn">Copy HEX List</button>
-          <button id="clearPaletteBtn">Clear</button>
+
+        <div class="tool-content">
+            <!-- Left Column -->
+            <div class="input-section">
+                <div class="image-upload-box" id="imageUploadBox">
+                    <div class="image-upload-icon">🖼️</div>
+                    <div class="image-upload-label">Upload or Drag & Drop Image</div>
+                    <div class="image-upload-desc">PNG, JPG, JPEG, GIF • Max 5MB</div>
+                    <input type="file" id="imageUpload" accept="image/*" />
+                </div>
+
+                <!-- Canvas now sits directly BELOW upload box -->
+                <canvas id="imageCanvas"></canvas>
+            </div>
+
+            <!-- Right Column -->
+            <div class="output-section">
+                <h3>🎨 Extracted Palette</h3>
+                <div id="extractedPalette" class="palette-grid"></div>
+                <div class="palette-actions">
+                    <button id="extractAllColorsBtn">🎨 Extract All Colors</button>
+                    <button id="exportJSONBtn">Export JSON</button>
+                    <button id="exportCSSBtn">Export CSS Vars</button>
+                    <button id="copyHEXBtn">Copy HEX List</button>
+                    <button id="clearPaletteBtn">Clear</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
-    <h2>🖌️ Image Color Extractor – Get Palettes from Any Picture</h2>
-    <p>The <strong>Image Color Extractor</strong> allows you to upload any picture and instantly extract its <strong>dominant colors</strong>. This tool is ideal for designers, photographers, and digital artists who want to create color palettes inspired by real images.</p>
-    <h3>🔑 Key Features</h3>
-    <ul>
-      <li>Upload PNG, JPG, JPEG, or GIF images</li>
-      <li>Extract dominant and full color palettes</li>
-      <li>Click on the image to pick custom colors</li>
-      <li>Export palettes as JSON, CSS variables, or PNG</li>
-      <li>Copy HEX color codes instantly</li>
-    </ul>
-    <h3>✅ Why Use It?</h3>
-    <p>Finding the perfect palette is easier when it’s inspired by <strong>real photos</strong>. This tool makes it simple to capture the color mood of any image and apply it to your designs, whether for <strong>websites, branding, or digital art</strong>.</p>
-    <p>👉 Try the <strong>Image Color Extractor</strong> now and turn any picture into a professional palette!</p>
-  </div>
+
+    <!-- ✅ SEO Article Section -->
+    <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+        <h2>🖌️ Image Color Extractor – Get Palettes from Any Picture</h2>
+        <p>
+            The <strong>Image Color Extractor</strong> allows you to upload any picture and instantly extract 
+            its <strong>dominant colors</strong>. This tool is ideal for designers, photographers, and digital 
+            artists who want to create color palettes inspired by real images.
+        </p>
+
+        <h3>🔑 Key Features</h3>
+        <ul>
+            <li>Upload PNG, JPG, JPEG, or GIF images</li>
+            <li>Extract dominant and full color palettes</li>
+            <li>Click on the image to pick custom colors</li>
+            <li>Export palettes as JSON, CSS variables, or PNG</li>
+            <li>Copy HEX color codes instantly</li>
+        </ul>
+
+        <h3>✅ Why Use It?</h3>
+        <p>
+            Finding the perfect palette is easier when it’s inspired by <strong>real photos</strong>. 
+            This tool makes it simple to capture the color mood of any image and apply it to your designs, 
+            whether for <strong>websites, branding, or digital art</strong>.
+        </p>
+
+        <p>👉 Try the <strong>Image Color Extractor</strong> now and turn any picture into a professional palette!</p>
+    </div>
+        </div>
+    </div>
 </div>
+
+    <script src="PickColors.js"></script>
 </body>
 </html>

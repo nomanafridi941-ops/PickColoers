@@ -3,62 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mood Board Generator – Create Inspiring Boards Online</title>
-  <meta name="description" content="Free online mood board generator. Create design inspiration boards with themes, colors, and images. Great for branding and creative projects.">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="stylesheet" href="../PickColors.css">
+  <title>Mood Board Generator – Free Online Design Boards</title>
+  <meta name="description" content="Create mood boards from colors, themes, and images. A free online tool for design inspiration, branding, and creative projects.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <nav class="container">
-    <a href="index.html" class="logo">PickColors</a>
-    <ul class="nav-links">
-      <li><a href="color-picker.html">Color Picker</a></li>
-      <li><a href="gradient-maker.html">Gradient Maker</a></li>
-      <li><a href="color-harmonies.html">Color Harmonies</a></li>
-      <li><a href="contrast-checker.html">Contrast Checker</a></li>
-      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
-      <li><a href="name-that-color.html">Name That Color</a></li>
-      <li><a href="color-finder.html">Color Finder</a></li>
-      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
-      <li><a href="readability-tester.html">Readability Tester</a></li>
-      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
-      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
-    </ul>
-  </nav>
-</header>
+  <!-- ...existing code for mood board generator tool copied from PickColors.html... -->
+<!-- 🎨 Mood Board Generator -->
 <div id="mood-board-generator-page" class="page">
-  <div id="mood-board-generator" class="tool-container">
-    <div class="tool-header">
-      <h2>🎨 Mood Board Generator</h2>
-      <p>Generate mood boards with theme-based colors.</p>
+    <div id="mood-board-generator" class="tool-container">
+        <div class="tool-header">
+            <h2>🎨 Mood Board Generator</h2>
+            <p>Generate mood boards with theme-based colors.</p>
+        </div>
+        <div class="tool-content">
+            <div class="input-section">
+                <label for="moodKeyword">Theme/Keyword:</label>
+                <input type="text" id="moodKeyword" placeholder="sunrise, desert, volcano">
+                <button class="btn" id="moodGenBtn">Generate Mood Board</button>
+            </div>
+            <div class="output-section">
+                <h3>Mood Board</h3>
+                <div id="moodBoardSwatches" class="palette-grid"></div>
+            </div>
+        </div>
     </div>
-    <div class="tool-content">
-      <div class="input-section">
-        <label for="moodKeyword">Theme/Keyword:</label>
-        <input type="text" id="moodKeyword" placeholder="sunrise, desert, volcano">
-        <button class="btn" id="moodGenBtn">Generate Mood Board</button>
-      </div>
-      <div class="output-section">
-        <h3>Mood Board</h3>
-        <div id="moodBoardSwatches" class="palette-grid"></div>
-      </div>
+
+    <!-- ✅ SEO Article Section -->
+    <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+        <h2>🎨 Mood Board Generator – Create Inspiring Color Themes</h2>
+        <p>
+            The <strong>Mood Board Generator</strong> creates visually stunning color boards based on your 
+            theme or keyword. Ideal for designers, marketers, and creatives to quickly visualize color concepts.
+        </p>
+
+        <h3>🔑 Key Features</h3>
+        <ul>
+            <li>Generate mood boards from keywords like sunrise, desert, or volcano</li>
+            <li>Automatically selects harmonious colors for your theme</li>
+            <li>Instant visual inspiration for projects</li>
+            <li>Easy to save, export, or integrate into design workflows</li>
+        </ul>
+
+        <h3>✅ Why Use This Tool?</h3>
+        <p>
+            Quickly turn abstract ideas into colorful, inspiring palettes. Perfect for <strong>branding, 
+            web design, and creative projects</strong>, it helps you maintain aesthetic consistency and 
+            spark creativity.
+        </p>
+
+        <p>👉 Generate your next <strong>Mood Board</strong> and get instant design inspiration!</p>
     </div>
-  </div>
-  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
-    <h2>🎨 Mood Board Generator – Create Inspiring Boards Online</h2>
-    <p>Free online mood board generator. Create design inspiration boards with themes, colors, and images. Great for branding and creative projects.</p>
-    <h3>🔑 Key Features</h3>
-    <ul>
-      <li>Theme/keyword-based color boards</li>
-      <li>Instant palette generation</li>
-      <li>Export and share boards</li>
-      <li>Perfect for branding, design, and inspiration</li>
-    </ul>
-    <h3>✅ Why Use It?</h3>
-    <p>Get inspired and create beautiful mood boards for your next project. Perfect for designers, marketers, and creative teams.</p>
-    <p>👉 Try the <strong>Mood Board Generator</strong> now and spark your creativity!</p>
-  </div>
 </div>
+
+    <script src="PickColors.js"></script>
 </body>
 </html>

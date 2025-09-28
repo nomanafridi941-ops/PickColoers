@@ -3,95 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Harmonies Tool – Complementary, Triadic, Tetradic Palettes</title>
-  <meta name="description" content="Find professional color harmonies like complementary, triadic, tetradic, split-complementary, and analogous schemes. Free tool for design inspiration.">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="stylesheet" href="../PickColors.css">
+  <title>Color Harmonies – Complementary & Triadic Palettes</title>
+  <meta name="description" content="Find color harmonies like complementary, triadic, tetradic, split, and analogous schemes. Free tool for designers and creative projects.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <nav class="container">
-    <a href="index.html" class="logo">PickColors</a>
-    <ul class="nav-links">
-      <li><a href="color-picker.html">Color Picker</a></li>
-      <li><a href="gradient-maker.html">Gradient Maker</a></li>
-      <li><a href="color-harmonies.html">Color Harmonies</a></li>
-      <li><a href="contrast-checker.html">Contrast Checker</a></li>
-      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
-      <li><a href="name-that-color.html">Name That Color</a></li>
-      <li><a href="color-finder.html">Color Finder</a></li>
-      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
-      <li><a href="readability-tester.html">Readability Tester</a></li>
-      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
-      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
-    </ul>
-  </nav>
-</header>
+  <!-- ...existing code for color harmonies tool copied from PickColors.html... -->
+       <!-- 🎯 Color Harmonies Page -->
 <div id="color-harmonies" class="page">
-  <div class="tool-container">
-    <div class="tool-header">
-      <h2>🎯 Color Harmonies</h2>
-      <p>Find advanced harmonies with export options</p>
+    <div class="tool-container">
+        <div class="tool-header">
+            <h2>🎯 Color Harmonies</h2>
+            <p>Find advanced harmonies with export options</p>
+        </div>
+
+        <div class="tool-content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h3>Choose Base Color</h3>
+
+                <div class="color-input-group">
+                    <label><i class="fas fa-eye-dropper"></i> Base Color</label>
+                    <input type="color" id="harmonyBaseColor" value="#ff5733">
+                </div>
+
+                <div class="color-input-group">
+                    <label><i class="fas fa-palette"></i> Harmony Type</label>
+                    <select id="harmonyType">
+                        <option value="complementary">Complementary</option>
+                        <option value="analogous">Analogous</option>
+                        <option value="triadic">Triadic</option>
+                        <option value="split">Split Complementary</option>
+                        <option value="analogous-complementary">Analogous + Complementary</option>
+                        <option value="tetradic">Tetradic</option>
+                        <option value="square">Square</option>
+                    </select>
+                </div>
+
+                <div class="color-input-group">
+                    <label><i class="fas fa-balance-scale"></i> Dominance</label>
+                    <select id="dominance">
+                        <option value="balanced">Balanced</option>
+                        <option value="accent">Accent</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="generateHarmony()">Generate Harmony</button>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <h3>Generated Harmony</h3>
+                <div class="harmony-bar-container" id="harmonyPalette"></div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="export-section">
+                <h3>Export Palette</h3>
+                <div class="export-buttons">
+                    <button class="btn" onclick="exportPalette('css')">Export CSS</button>
+                    <button class="btn" onclick="exportPalette('scss')">Export SCSS</button>
+                    <button class="btn" onclick="exportPalette('js')">Export JS</button>
+                    <button class="btn" onclick="exportPalette('svg')">Export SVG</button>
+                    <button class="btn" onclick="exportPalette('png')">Export PNG</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="tool-content">
-      <div class="input-section">
-        <h3>Choose Base Color</h3>
-        <div class="color-input-group">
-          <label>Base Color</label>
-          <input type="color" id="harmonyBaseColor" value="#ff5733">
-        </div>
-        <div class="color-input-group">
-          <label>Harmony Type</label>
-          <select id="harmonyType">
-            <option value="complementary">Complementary</option>
-            <option value="analogous">Analogous</option>
-            <option value="triadic">Triadic</option>
-            <option value="split">Split Complementary</option>
-            <option value="analogous-complementary">Analogous + Complementary</option>
-            <option value="tetradic">Tetradic</option>
-            <option value="square">Square</option>
-          </select>
-        </div>
-        <div class="color-input-group">
-          <label>Dominance</label>
-          <select id="dominance">
-            <option value="balanced">Balanced</option>
-            <option value="accent">Accent</option>
-          </select>
-        </div>
-        <button class="btn" onclick="generateHarmony()">Generate Harmony</button>
-      </div>
-      <div class="output-section">
-        <h3>Generated Harmony</h3>
-        <div class="harmony-bar-container" id="harmonyPalette"></div>
-      </div>
-      <div class="export-section">
-        <h3>Export Palette</h3>
-        <div class="export-buttons">
-          <button class="btn" onclick="exportPalette('css')">Export CSS</button>
-          <button class="btn" onclick="exportPalette('scss')">Export SCSS</button>
-          <button class="btn" onclick="exportPalette('js')">Export JS</button>
-          <button class="btn" onclick="exportPalette('svg')">Export SVG</button>
-          <button class="btn" onclick="exportPalette('png')">Export PNG</button>
-        </div>
-      </div>
+
+    <!-- ✅ SEO Article Section -->
+    <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+        <h2>🎯 Color Harmonies – Perfect Palettes for Designers</h2>
+        <p>
+            The <strong>Color Harmonies Tool</strong> helps you discover professional color combinations 
+            such as <strong>complementary, analogous, triadic, split, tetradic, and square harmonies</strong>. 
+            It is the perfect solution for designers, artists, and developers who want balanced and aesthetic palettes.
+        </p>
+
+        <h3>🔑 Key Features</h3>
+        <ul>
+            <li>Generate multiple harmony types (complementary, triadic, tetradic, etc.)</li>
+            <li>Real-time palette preview</li>
+            <li>Export palettes to CSS, SCSS, JS, SVG, or PNG</li>
+            <li>Choose dominance for accent-based designs</li>
+            <li>Ideal for web design, branding, and digital art</li>
+        </ul>
+
+        <h3>✅ Why Use It?</h3>
+        <p>
+            Color harmony is essential in <strong>UI/UX design, branding, and creative projects</strong>. 
+            This tool makes it easy to generate balanced and professional color schemes, saving time and 
+            improving design quality.
+        </p>
+
+        <p>👉 Try the <strong>Color Harmonies Tool</strong> now and create beautiful, professional palettes with ease!</p>
     </div>
-  </div>
-  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
-    <h2>🎯 Color Harmonies – Perfect Palettes for Designers</h2>
-    <p>The <strong>Color Harmonies Tool</strong> helps you discover professional color combinations such as <strong>complementary, analogous, triadic, split, tetradic, and square harmonies</strong>. It is the perfect solution for designers, artists, and developers who want balanced and aesthetic palettes.</p>
-    <h3>🔑 Key Features</h3>
-    <ul>
-      <li>Generate multiple harmony types (complementary, triadic, tetradic, etc.)</li>
-      <li>Real-time palette preview</li>
-      <li>Export palettes to CSS, SCSS, JS, SVG, or PNG</li>
-      <li>Choose dominance for accent-based designs</li>
-      <li>Ideal for web design, branding, and digital art</li>
-    </ul>
-    <h3>✅ Why Use It?</h3>
-    <p>Color harmony is essential in <strong>UI/UX design, branding, and creative projects</strong>. This tool makes it easy to generate balanced and professional color schemes, saving time and improving design quality.</p>
-    <p>👉 Try the <strong>Color Harmonies Tool</strong> now and create beautiful, professional palettes with ease!</p>
-  </div>
+        </div>
+    </div>
 </div>
+
+    <script src="PickColors.js"></script>
 </body>
 </html>

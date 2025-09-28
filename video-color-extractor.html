@@ -3,79 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Color Extractor – Generate Palettes from Video & GIF</title>
-  <meta name="description" content="Upload a video or GIF to extract color palettes frame by frame or overall. Perfect for filmmakers, social media creators, and designers.">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="stylesheet" href="../PickColors.css">
+  <title>Video Color Extractor – Palettes from Video/GIF</title>
+  <meta name="description" content="Upload a video or GIF to extract color palettes by frame or overall. Perfect for filmmakers, social media creators, and designers.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <nav class="container">
-    <a href="index.html" class="logo">PickColors</a>
-    <ul class="nav-links">
-      <li><a href="color-picker.html">Color Picker</a></li>
-      <li><a href="gradient-maker.html">Gradient Maker</a></li>
-      <li><a href="color-harmonies.html">Color Harmonies</a></li>
-      <li><a href="contrast-checker.html">Contrast Checker</a></li>
-      <li><a href="image-color-extractor.html">Image Color Extractor</a></li>
-      <li><a href="name-that-color.html">Name That Color</a></li>
-      <li><a href="color-finder.html">Color Finder</a></li>
-      <li><a href="video-color-extractor.html">Video/GIF Extractor</a></li>
-      <li><a href="readability-tester.html">Readability Tester</a></li>
-      <li><a href="mood-board-generator.html">Mood Board Generator</a></li>
-      <li><a href="random-palette-inspiration.html">Random Palette</a></li>
-    </ul>
-  </nav>
-</header>
+  <!-- ...existing code for video color extractor tool copied from PickColors.html... -->
+<!-- 🎬 Video/GIF Color Palette Extractor -->
 <div id="video-color-extractor" class="page">
-  <div class="tool-container">
-    <div class="tool-header">
-      <h2>🎬 Color Palette from Video / GIF</h2>
-      <p>Upload a video or GIF, capture frame, and pick exact colors from the canvas.</p>
-    </div>
-    <div class="input-section">
-      <div class="video-upload-box" id="videoUploadBox" onclick="document.getElementById('videoUpload').click()">
-        <div class="video-upload-icon">🎞️</div>
-        <div class="video-upload-label">Upload Video / GIF</div>
-        <div class="video-upload-desc">MP4, WebM, MOV, GIF • Max 20MB</div>
-        <input type="file" id="videoUpload" accept="video/*,image/gif" />
-        <video id="videoPreview" class="video-preview" controls onclick="event.stopPropagation()"></video>
-      </div>
-    </div>
-    <div class="two-column">
-      <div class="article-section">
-        <h3>📸 Capture Frame</h3>
-        <button class="btn" id="captureFrame">Capture Frame</button>
-        <canvas id="videoCanvas" style="display:none; margin-top:10px; max-width:100%; border:1px solid #ccc;"></canvas>
-      </div>
-      <div class="output-section">
-        <h3>🎨 Extracted Palette</h3>
-        <div id="videoPalette" class="palette-grid"></div>
-        <div class="palette-actions">
-          <button class="btn" id="extractAll">🎨 Extract All Colors</button>
-          <button class="btn outline" id="exportJSON">Export JSON</button>
-          <button class="btn outline" id="exportCSS">Export CSS Vars</button>
-          <button class="btn outline" id="copyHEX">Copy HEX List</button>
-          <button class="btn danger" id="clearPalette">Clear</button>
+    <div class="tool-container">
+        <div class="tool-header">
+            <h2>🎬 Color Palette from Video / GIF</h2>
+            <p>Upload a video or GIF, capture frame, and pick exact colors from the canvas.</p>
         </div>
-      </div>
+
+        <!-- Upload -->
+        <div class="input-section">
+            <div class="video-upload-box" id="videoUploadBox" onclick="document.getElementById('videoUpload').click()">
+                <div class="video-upload-icon">🎞️</div>
+                <div class="video-upload-label">Upload Video / GIF</div>
+                <div class="video-upload-desc">MP4, WebM, MOV, GIF • Max 20MB</div>
+                <input type="file" id="videoUpload" accept="video/*,image/gif" />
+                <video id="videoPreview" class="video-preview" controls onclick="event.stopPropagation()"></video>
+            </div>
+        </div>
+
+        <!-- Capture + Palette -->
+        <div class="two-column">
+            <!-- Capture -->
+            <div class="article-section">
+                <h3>📸 Capture Frame</h3>
+                <button class="btn" id="captureFrame">Capture Frame</button>
+                <canvas id="videoCanvas" style="display:none; margin-top:10px; max-width:100%; border:1px solid #ccc;"></canvas>
+            </div>
+            <!-- Palette -->
+            <div class="output-section">
+                <h3>🎨 Extracted Palette</h3>
+                <div id="videoPalette" class="palette-grid"></div>
+                <div class="palette-actions">
+                    <button class="btn" id="extractAll">🎨 Extract All Colors</button>
+                    <button class="btn outline" id="exportJSON">Export JSON</button>
+                    <button class="btn outline" id="exportCSS">Export CSS Vars</button>
+                    <button class="btn outline" id="copyHEX">Copy HEX List</button>
+                    <button class="btn danger" id="clearPalette">Clear</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
-    <h2>🎬 Extract Color Palettes from Video & GIF</h2>
-    <p>The <strong>Video/GIF Color Palette Extractor</strong> lets you upload any video or GIF and instantly extract its color palette. Capture frames, pick colors from the canvas, and create palettes for design, branding, or inspiration.</p>
-    <h3>🔑 Key Features</h3>
-    <ul>
-      <li>Upload MP4, WebM, MOV, or GIF files up to 20MB</li>
-      <li>Capture any frame from your video or GIF</li>
-      <li>Extract exact colors for UI, graphics, or web projects</li>
-      <li>Export palettes as JSON, CSS variables, or HEX lists</li>
-      <li>Clear, copy, and manage palettes effortlessly</li>
-    </ul>
-    <h3>✅ Why Use This Tool?</h3>
-    <p>Quickly generate professional color palettes from videos or GIFs without guessing colors. Perfect for <strong>graphic designers, web developers, and content creators</strong>, it simplifies your workflow and ensures color consistency.</p>
-    <p>👉 Try the <strong>Video/GIF Color Palette Extractor</strong> to unlock vibrant colors from your media!</p>
-  </div>
+
+    <!-- ✅ SEO Article Section -->
+    <div class="article-box" style="margin:20px 0; padding:20px; border:1px solid #eee; border-radius:18px;">
+        <h2>🎬 Extract Color Palettes from Video & GIF</h2>
+        <p>
+            The <strong>Video/GIF Color Palette Extractor</strong> lets you upload any video or GIF and instantly 
+            extract its color palette. Capture frames, pick colors from the canvas, and create palettes for 
+            design, branding, or inspiration.
+        </p>
+
+        <h3>🔑 Key Features</h3>
+        <ul>
+            <li>Upload MP4, WebM, MOV, or GIF files up to 20MB</li>
+            <li>Capture any frame from your video or GIF</li>
+            <li>Extract exact colors for UI, graphics, or web projects</li>
+            <li>Export palettes as JSON, CSS variables, or HEX lists</li>
+            <li>Clear, copy, and manage palettes effortlessly</li>
+        </ul>
+
+        <h3>✅ Why Use This Tool?</h3>
+        <p>
+            Quickly generate professional color palettes from videos or GIFs without guessing colors. Perfect 
+            for <strong>graphic designers, web developers, and content creators</strong>, it simplifies your 
+            workflow and ensures color consistency.
+        </p>
+
+        <p>👉 Try the <strong>Video/GIF Color Palette Extractor</strong> to unlock vibrant colors from your media!</p>
+    </div>
+        </div>
+    </div>
 </div>
+
+    <script src="PickColors.js"></script>
 </body>
 </html>

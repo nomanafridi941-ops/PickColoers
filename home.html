@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PickColors – Free Color Tools, Palettes & CSS Generators</title>
+  <meta name="description" content="PickColors offers free online color tools like color picker, gradient generator, palette maker, HEX to RGB converter, contrast checker, and CSS color utilities for designers and developers.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+      <header>
+  <nav class="container">
+    <!-- ✅ Only image logo -->
+
+<a href="/" class="logo" onclick="goHome(); return false;">
+  <img src="logo.webp" alt="PickColors Logo" width="200">
+</a>
+
+
+
+
+
+
+    <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" onclick="showPage('home')" class="active">Home</a></li>
+      <li class="dropdown" id="toolsDropdown">
+        <a href="#tools" class="dropdown-toggle" onclick="toggleToolsDropdown(event)">
+          Tools <span class="dropdown-arrow">▼</span>
+        </a>
+        <ul class="dropdown-menu">
+
+          <!-- 🎨 Conversion & Analysis -->
+          <li class="submenu">
+            <a href="#">🎨 Conversion & Analysis ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#color-picker" onclick="showPage('color-picker')">🎨 Color Picker & Converter</a></li>
+              <li><a href="#name-that-color" onclick="showPage('name-that-color')">🎨 Name That Color</a></li>
+              <li><a href="#color-finder-page" onclick="showPage('color-finder-page')">🔍 Color Finder by Code</a></li>
+            </ul>
+          </li>
+
+          <!-- 🌈 Palette & Gradient -->
+          <li class="submenu">
+            <a href="#">🌈 Palette & Gradient ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#gradient-maker" onclick="showPage('gradient-maker')">🔄 Gradient Maker</a></li>
+              <li><a href="#color-harmonies" onclick="showPage('color-harmonies')">🎯 Color Harmonies</a></li>
+              <li><a href="#image-color-extractor" onclick="showPage('image-color-extractor')">🖌️ Image Color Extractor</a></li>
+              <li><a href="#video-color-extractor" onclick="showPage('video-color-extractor')">🎬 Color Palette from Video/GIF</a></li>
+            </ul>
+          </li>
+
+          <!-- ♿ Accessibility & Usability -->
+          <li class="submenu">
+            <a href="#">♿ Accessibility & Usability ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#contrast-checker" onclick="showPage('contrast-checker')">♿ Contrast Checker</a></li>
+              <li><a href="#readability-tester-page" onclick="showPage('readability-tester-page')">🧭 Readability Tester</a></li>
+            </ul>
+          </li>
+
+          <!-- 🎭 Creative & Mood -->
+          <li class="submenu">
+            <a href="#">🎭 Creative & Mood ▸</a>
+            <ul class="submenu-menu">
+              <li><a href="#mood-board-generator-page" onclick="showPage('mood-board-generator-page')">🎨 Mood Board Generator</a></li>
+              <li><a href="#random-palette-inspiration-page" onclick="showPage('random-palette-inspiration-page')">🎲 Random Palette Inspiration</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+
+      <li><a href="#about" onclick="showPage('about')">About</a></li>
+      <li><a href="#contact" onclick="showPage('contact')">Contact</a></li>
+      <li><a href="#privacy" onclick="showPage('privacy')">Privacy</a></li>
+      <li><a href="#terms" onclick="showPage('terms')">Terms</a></li>
+    </ul>
+  </nav>
+</header>
+  <main class="container">
+    <!-- Global Top Ad -->
+    <div class="ad-container" style="text-align:center; margin:20px 0;">
+      <div class="ad-card" style="width:728px; height:90px;">
+        <script type="text/javascript">
+          atOptions = {
+            'key' : 'ab3b37b550151b0dd92bee65e7185141',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+          };
+        </script>
+        <script type="text/javascript" src="//mommydignified.com/ab3b37b550151b0dd92bee65e7185141/invoke.js"></script>
+      </div>
+    </div>
+    <section class="hero">
+      <h1>Professional Color Tools</h1>
+      <p>Advanced color suite for designers and developers. Generate palettes, check accessibility, create gradients, and convert colors with precision.</p>
+    </section>
+   <div class="tool-container">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="input-section" onclick="showPage('color-picker')" style="cursor: pointer;">
+                        <h3>🎨 Color Picker & Converter</h3>
+                        <p>Convert between HEX, RGB, HSL, HSV, and more. Professional color picker with instant
+                            conversions.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('gradient-maker')" style="cursor: pointer;">
+                        <h3>🔄 Gradient Maker</h3>
+                        <p>Create stunning CSS gradients with multiple stops and customizable directions.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('color-harmonies')" style="cursor: pointer;">
+                        <h3>🎯 Color Harmonies</h3>
+                        <p>Find complementary, triadic, analogous, and split-complementary color schemes.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('contrast-checker')" style="cursor: pointer;">
+                        <h3>♿ Contrast Checker</h3>
+                        <p>Check WCAG accessibility compliance and contrast ratios for better design.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('image-color-extractor')" style="cursor: pointer;">
+                        <h3>🖌️ Image Color Extractor</h3>
+                        <p>Upload an image to extract dominant colors and generate instant palettes. Perfect for
+                            branding, design, and inspiration.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('name-that-color')" style="cursor: pointer;">
+                        <h3>🎨 Name That Color</h3>
+                        <p>Enter HEX or RGB to find the closest CSS color name and human-friendly label. A quick
+                            reference for designers.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('color-finder-page')" style="cursor: pointer;">
+                        <h3>🔍 Color Finder by Code</h3>
+                        <p>Input a HEX or RGB code to view similar shades and nearby swatches. Great for design
+                            inspiration and palette building.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('video-color-extractor')" style="cursor: pointer;">
+                        <h3>🎬 Color Palette from Video/GIF</h3>
+                        <p>Upload a video or GIF to extract dominant colors frame-by-frame or overall. Ideal for film,
+                            social media, and digital design.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('readability-tester-page')" style="cursor: pointer;">
+                        <h3>🧭 Readability Tester</h3>
+                        <p>Test text readability against background colors with instant contrast evaluation.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('mood-board-generator-page')" style="cursor: pointer;">
+                        <h3>🎨 Mood Board Generator</h3>
+                        <p>Automatically generate mood boards from a theme or keyword to inspire design projects.</p>
+                    </div>
+                    <div class="input-section" onclick="showPage('random-palette-inspiration-page')"
+                        style="cursor: pointer;">
+                        <h3>🎲 Random Palette Inspiration</h3>
+                        <p>Generate unique random color palettes instantly for fresh design inspiration.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Only one ad at the top and one at the bottom -->
+        </div>
+
+  </main>
+      <!-- Global Bottom Ad -->
+    <div class="ad-container" style="text-align:center; margin:20px 0;">
+            <div class="ad-card" style="width:728px; height:90px;">
+               <script type="text/javascript">
+	atOptions = {
+		'key' : 'ab3b37b550151b0dd92bee65e7185141',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//mommydignified.com/ab3b37b550151b0dd92bee65e7185141/invoke.js"></script>
+            </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Tools</h3>
+                    <ul>
+                        <li><a href="#color-picker" onclick="showPage('color-picker')">🎨 Color Picker</a></li>
+                        <li><a href="#contrast-checker" onclick="showPage('contrast-checker')">♿ Contrast Checker</a>
+                        </li>
+                        <li><a href="#gradient-maker" onclick="showPage('gradient-maker')">🔄 Gradient Maker</a></li>
+                        <li><a href="#color-harmonies" onclick="showPage('color-harmonies')">🎯 Color Harmonies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#color-theory" title="Learn about color harmony, psychology, and design principles"
+                                onclick="showPage('color-theory')">🎨 Color Theory Guide</a></li>
+                        <li><a href="#css-colors" title="Complete list of CSS color names with HEX and RGB values"
+                                onclick="showPage('css-colors')">🎨 CSS Color Names</a></li>
+                        <li><a href="#accessibility"
+                                title="Test color contrast, simulate color blindness, and check WCAG compliance"
+                                onclick="showPage('accessibility')">♿ Accessibility Tools</a></li>
+                        <li><a href="#color-conversion" title="Convert between HEX, RGB, HSL, HSV, and CMYK instantly"
+                                onclick="showPage('color-conversion')">🔄 Color Conversion Tools</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#about" onclick="showPage('about')">🏢 About Us</a></li>
+                        <li><a href="#contact" onclick="showPage('contact')">📞 Contact</a></li>
+                        <li><a href="#privacy" onclick="showPage('privacy')">🔒 Privacy Policy</a></li>
+                        <li><a href="#terms" onclick="showPage('terms')">📄 Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p>&copy; 2025 PickColors. All rights reserved. Professional color tools for designers and developers.</p>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+
+
+<div style="text-align:center; margin:20px 0;">
+<script type='text/javascript' src='//mommydignified.com/ee/9d/05/ee9d05d3cc4043a5fa4b40e8d9f2470f.js'></script></div>
+  <script src="PickColors.js"></script>
+</body>
+</html>
