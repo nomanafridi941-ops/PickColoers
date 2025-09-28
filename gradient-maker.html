@@ -96,6 +96,59 @@
     </div>
 </div>
 
-    <script src="PickColors.js"></script>
+    <script> 
+
+//========================== Gradient functions Tool =========================
+        function generateAdvancedGradient() {
+            const direction = document.getElementById('gradientDirection').value;
+            const stopGroups = document.querySelectorAll('#gradientStops .color-input-group');
+            let stops = [];
+            stopGroups.forEach(group => {
+                const color = group.querySelector('input[type="color"]').value;
+                const pos = group.querySelector('input[type="number"]').value + "%";
+                stops.push(`${color} ${pos}`);
+            });
+
+            let gradientCSS;
+            if (direction === 'radial') {
+                gradientCSS = `radial-gradient(circle, ${stops.join(', ')})`;
+            } else {
+                gradientCSS = `linear-gradient(${direction}, ${stops.join(', ')})`;
+            }
+
+            const preview = document.getElementById('gradientPreview');
+            preview.style.background = gradientCSS;
+            document.getElementById('gradientCSS').textContent = `background: ${gradientCSS};`;
+        }
+
+        function addGradientStop() {
+            const stopsContainer = document.getElementById('gradientStops');
+            const newStop = document.createElement('div');
+            newStop.className = 'color-input-group';
+            newStop.innerHTML = `
+        <label>Stop:</label>
+        <input type="color" value="#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}">
+        <input type="number" value="50" min="0" max="100" step="1">%
+        <button type="button" class="remove-stop">❌</button>
+    `;
+
+            newStop.querySelector('.remove-stop').addEventListener('click', () => {
+                newStop.remove();
+                generateAdvancedGradient();
+            });
+
+            stopsContainer.appendChild(newStop);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("generateGradientBtn").addEventListener("click", generateAdvancedGradient);
+            document.getElementById("addStopBtn").addEventListener("click", addGradientStop);
+        });
+
+
+
+    </script>
+        <script src="PickColors.js"></script>
+
 </body>
 </html>

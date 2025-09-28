@@ -101,6 +101,76 @@
     </div>
 </div>
 
-    <script src="PickColors.js"></script>
+    <script>
+
+ // ♿ Accessibility Contrast Checker ======================= START
+
+        function checkContrast() {
+            const fg = document.getElementById('foregroundColor').value;
+            const bg = document.getElementById('backgroundColor').value;
+            const fgRgb = hexToRgb(fg);
+            const bgRgb = hexToRgb(bg);
+            const contrast = calculateContrastRatio(fgRgb, bgRgb);
+
+            const preview = document.getElementById('contrastPreview');
+            preview.style.color = fg;
+            preview.style.backgroundColor = bg;
+            preview.textContent = `Sample text with ${contrast.toFixed(2)}:1 contrast ratio`;
+
+            document.getElementById('contrastRatio').textContent = `${contrast.toFixed(2)}:1`;
+            updateAccessibilityBadges(contrast);
+        }
+
+        function calculateContrastRatio(rgb1, rgb2) {
+            const l1 = getRelativeLuminance(rgb1);
+            const l2 = getRelativeLuminance(rgb2);
+            const lighter = Math.max(l1, l2);
+            const darker = Math.min(l1, l2);
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        function getRelativeLuminance(rgb) {
+            const rsRGB = rgb.r / 255;
+            const gsRGB = rgb.g / 255;
+            const bsRGB = rgb.b / 255;
+
+            const r = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+            const g = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+            const b = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        }
+
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex.slice(1), 16);
+            return {
+                r: (bigint >> 16) & 255,
+                g: (bigint >> 8) & 255,
+                b: bigint & 255
+            };
+        }
+
+        function updateAccessibilityBadges(contrast) {
+            const badges = {
+                normalText: { element: document.getElementById('normalText'), threshold: 4.5 },
+                largeText: { element: document.getElementById('largeText'), threshold: 3 },
+                normalTextAAA: { element: document.getElementById('normalTextAAA'), threshold: 7 },
+                largeTextAAA: { element: document.getElementById('largeTextAAA'), threshold: 4.5 }
+            };
+
+            Object.values(badges).forEach(badge => {
+                const passes = contrast >= badge.threshold;
+                badge.element.className = `accessibility-badge ${passes ? 'pass' : 'fail'}`;
+                badge.element.children[1].textContent = passes ?
+                    (badge.element.id.includes('AAA') ? 'AAA ✓' : 'AA ✓') :
+                    (badge.element.id.includes('AAA') ? 'AAA ✗' : 'AA ✗');
+            });
+        }
+
+        // ♿ Accessibility Contrast Checker ======================= END
+
+    </script>
+        <script src="PickColors.js"></script>
+
 </body>
 </html>

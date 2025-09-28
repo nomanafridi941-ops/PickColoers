@@ -61,6 +61,43 @@
     </div>
 </div>
 
+    <script>
+
+/* 🧭 Readability Tester START (JS) */
+        document.getElementById("readTestBtn").onclick = function () {
+            const text = document.getElementById("readText").value || "Sample text";
+            const bg = document.getElementById("readBg").value;
+            const fg = document.getElementById("readFg").value;
+            document.getElementById("readPreview").style.background = bg;
+            document.getElementById("readPreview").style.color = fg;
+            document.getElementById("readPreview").textContent = text;
+            // Contrast check
+            function hexToRgb(hex) {
+                hex = hex.replace(/^#/, "");
+                if (hex.length === 3) hex = hex.split("").map(x => x + x).join("");
+                const num = parseInt(hex, 16);
+                return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+            }
+            function luminance(r, g, b) {
+                r /= 255; g /= 255; b /= 255;
+                [r, g, b] = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+                return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            }
+            function contrastRatio(rgb1, rgb2) {
+                const l1 = luminance(rgb1.r, rgb1.g, rgb1.b);
+                const l2 = luminance(rgb2.r, rgb2.g, rgb2.b);
+                return ((Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05)).toFixed(2);
+            }
+            const ratio = contrastRatio(hexToRgb(bg), hexToRgb(fg));
+            let pass = ratio >= 4.5 ? "<span style='color:#38a169'>Readable (Pass)</span>" : "<span style='color:#e53e3e'>Not Readable (Fail)</span>";
+            document.getElementById("readResult").innerHTML = `Contrast Ratio: <b>${ratio}</b> ${pass}`;
+        };
+        /* 🧭 Readability Tester END (JS) */
+
+
+    </script>
+    
     <script src="PickColors.js"></script>
+
 </body>
 </html>

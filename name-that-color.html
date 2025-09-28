@@ -99,6 +99,339 @@
     </div>
 </div>  
 
-    <script src="PickColors.js"></script>
+    <script>
+
+ // ======================= 🎨 Name That Color =======================
+        // Convert RGB to HEX
+        function rgbToHex(r, g, b) {
+            return "#" + [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("").toUpperCase();
+        }
+        function hexToRgb(hex) {
+            hex = hex.replace("#", "");
+            if (hex.length === 3) hex = hex.split("").map(h => h + h).join("");
+            const bigint = parseInt(hex, 16);
+            return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+        }
+        function parseColorInput(input) {
+            input = input.trim(); let rgb = null;
+            if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(input)) rgb = hexToRgb(input);
+            else if (/^rgba?\(/.test(input)) {
+                const vals = input.replace(/rgba?\(|\)/g, "").split(",").map(v => parseInt(v.trim()));
+                if (vals.length >= 3) rgb = { r: vals[0], g: vals[1], b: vals[2] };
+            }
+            return rgb;
+        }
+        function colorDistance(c1, c2) { return Math.sqrt((c1.r - c2.r) ** 2 + (c1.g - c2.g) ** 2 + (c1.b - c2.b) ** 2); }
+
+        // HSL conversion
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) { h = s = 0; } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }
+                h = Math.round(h * 60);
+            }
+            return { h: h, s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+        // HSV
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+            let h, s, v = max, sat = max === 0 ? 0 : d / max;
+            if (max === min) { h = 0; } else {
+                switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }
+                h = Math.round(h * 60);
+            }
+            return { h: h, s: Math.round(s * 100), v: Math.round(v * 100) };
+        }
+        // CMYK
+        function rgbToCmyk(r, g, b) {
+            let c = 1 - r / 255, m = 1 - g / 255, y = 1 - b / 255;
+            let k = Math.min(c, m, y);
+            if (k === 1) return { c: 0, m: 0, y: 0, k: 100 };
+            return {
+                c: Math.round((c - k) / (1 - k) * 100),
+                m: Math.round((m - k) / (1 - k) * 100),
+                y: Math.round((y - k) / (1 - k) * 100),
+                k: Math.round(k * 100)
+            };
+        }
+        // Contrast
+        function luminance(r, g, b) {
+            let a = [r, g, b].map(v => {
+                v /= 255;
+                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+            });
+            return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+        }
+        function contrastRatio(c1, c2) {
+            const l1 = luminance(c1.r, c1.g, c1.b), l2 = luminance(c2.r, c2.g, c2.b);
+            return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+        }
+
+        // ======= CSS Colors List (147 Named Colors) =======
+        const cssColors = [
+            { name: "aliceblue", friendly: "Alice Blue", hex: "#F0F8FF" },
+            { name: "antiquewhite", friendly: "Antique White", hex: "#FAEBD7" },
+            { name: "aqua", friendly: "Aqua", hex: "#00FFFF" },
+            { name: "aquamarine", friendly: "Aquamarine", hex: "#7FFFD4" },
+            { name: "azure", friendly: "Azure", hex: "#F0FFFF" },
+            { name: "beige", friendly: "Beige", hex: "#F5F5DC" },
+            { name: "bisque", friendly: "Bisque", hex: "#FFE4C4" },
+            { name: "black", friendly: "Black", hex: "#000000" },
+            { name: "blanchedalmond", friendly: "Blanched Almond", hex: "#FFEBCD" },
+            { name: "blue", friendly: "Blue", hex: "#0000FF" },
+            { name: "blueviolet", friendly: "Blue Violet", hex: "#8A2BE2" },
+            { name: "brown", friendly: "Brown", hex: "#A52A2A" },
+            { name: "burlywood", friendly: "Burly Wood", hex: "#DEB887" },
+            { name: "cadetblue", friendly: "Cadet Blue", hex: "#5F9EA0" },
+            { name: "chartreuse", friendly: "Chartreuse", hex: "#7FFF00" },
+            { name: "chocolate", friendly: "Chocolate", hex: "#D2691E" },
+            { name: "coral", friendly: "Coral", hex: "#FF7F50" },
+            { name: "cornflowerblue", friendly: "Cornflower Blue", hex: "#6495ED" },
+            { name: "cornsilk", friendly: "Cornsilk", hex: "#FFF8DC" },
+            { name: "crimson", friendly: "Crimson", hex: "#DC143C" },
+            { name: "cyan", friendly: "Cyan", hex: "#00FFFF" },
+            { name: "darkblue", friendly: "Dark Blue", hex: "#00008B" },
+            { name: "darkcyan", friendly: "Dark Cyan", hex: "#008B8B" },
+            { name: "darkgoldenrod", friendly: "Dark Goldenrod", hex: "#B8860B" },
+            { name: "darkgray", friendly: "Dark Gray", hex: "#A9A9A9" },
+            { name: "darkgreen", friendly: "Dark Green", hex: "#006400" },
+            { name: "darkgrey", friendly: "Dark Grey", hex: "#A9A9A9" },
+            { name: "darkkhaki", friendly: "Dark Khaki", hex: "#BDB76B" },
+            { name: "darkmagenta", friendly: "Dark Magenta", hex: "#8B008B" },
+            { name: "darkolivegreen", friendly: "Dark Olive Green", hex: "#556B2F" },
+            { name: "darkorange", friendly: "Dark Orange", hex: "#FF8C00" },
+            { name: "darkorchid", friendly: "Dark Orchid", hex: "#9932CC" },
+            { name: "darkred", friendly: "Dark Red", hex: "#8B0000" },
+            { name: "darksalmon", friendly: "Dark Salmon", hex: "#E9967A" },
+            { name: "darkseagreen", friendly: "Dark Sea Green", hex: "#8FBC8F" },
+            { name: "darkslateblue", friendly: "Dark Slate Blue", hex: "#483D8B" },
+            { name: "darkslategray", friendly: "Dark Slate Gray", hex: "#2F4F4F" },
+            { name: "darkslategrey", friendly: "Dark Slate Grey", hex: "#2F4F4F" },
+            { name: "darkturquoise", friendly: "Dark Turquoise", hex: "#00CED1" },
+            { name: "darkviolet", friendly: "Dark Violet", hex: "#9400D3" },
+            { name: "deeppink", friendly: "Deep Pink", hex: "#FF1493" },
+            { name: "deepskyblue", friendly: "Deep Sky Blue", hex: "#00BFFF" },
+            { name: "dimgray", friendly: "Dim Gray", hex: "#696969" },
+            { name: "dimgrey", friendly: "Dim Grey", hex: "#696969" },
+            { name: "dodgerblue", friendly: "Dodger Blue", hex: "#1E90FF" },
+            { name: "firebrick", friendly: "Firebrick", hex: "#B22222" },
+            { name: "floralwhite", friendly: "Floral White", hex: "#FFFAF0" },
+            { name: "forestgreen", friendly: "Forest Green", hex: "#228B22" },
+            { name: "fuchsia", friendly: "Fuchsia", hex: "#FF00FF" },
+            { name: "gainsboro", friendly: "Gainsboro", hex: "#DCDCDC" },
+            { name: "ghostwhite", friendly: "Ghost White", hex: "#F8F8FF" },
+            { name: "gold", friendly: "Gold", hex: "#FFD700" },
+            { name: "goldenrod", friendly: "Goldenrod", hex: "#DAA520" },
+            { name: "gray", friendly: "Gray", hex: "#808080" },
+            { name: "green", friendly: "Green", hex: "#008000" },
+            { name: "greenyellow", friendly: "Green Yellow", hex: "#ADFF2F" },
+            { name: "grey", friendly: "Grey", hex: "#808080" },
+            { name: "honeydew", friendly: "Honeydew", hex: "#F0FFF0" },
+            { name: "hotpink", friendly: "Hot Pink", hex: "#FF69B4" },
+            { name: "indianred", friendly: "Indian Red", hex: "#CD5C5C" },
+            { name: "indigo", friendly: "Indigo", hex: "#4B0082" },
+            { name: "ivory", friendly: "Ivory", hex: "#FFFFF0" },
+            { name: "khaki", friendly: "Khaki", hex: "#F0E68C" },
+            { name: "lavender", friendly: "Lavender", hex: "#E6E6FA" },
+            { name: "lavenderblush", friendly: "Lavender Blush", hex: "#FFF0F5" },
+            { name: "lawngreen", friendly: "Lawn Green", hex: "#7CFC00" },
+            { name: "lemonchiffon", friendly: "Lemon Chiffon", hex: "#FFFACD" },
+            { name: "lightblue", friendly: "Light Blue", hex: "#ADD8E6" },
+            { name: "lightcoral", friendly: "Light Coral", hex: "#F08080" },
+            { name: "lightcyan", friendly: "Light Cyan", hex: "#E0FFFF" },
+            { name: "lightgoldenrodyellow", friendly: "Light Goldenrod Yellow", hex: "#FAFAD2" },
+            { name: "lightgray", friendly: "Light Gray", hex: "#D3D3D3" },
+            { name: "lightgreen", friendly: "Light Green", hex: "#90EE90" },
+            { name: "lightgrey", friendly: "Light Grey", hex: "#D3D3D3" },
+            { name: "lightpink", friendly: "Light Pink", hex: "#FFB6C1" },
+            { name: "lightsalmon", friendly: "Light Salmon", hex: "#FFA07A" },
+            { name: "lightseagreen", friendly: "Light Sea Green", hex: "#20B2AA" },
+            { name: "lightskyblue", friendly: "Light Sky Blue", hex: "#87CEFA" },
+            { name: "lightslategray", friendly: "Light Slate Gray", hex: "#778899" },
+            { name: "lightslategrey", friendly: "Light Slate Grey", hex: "#778899" },
+            { name: "lightsteelblue", friendly: "Light Steel Blue", hex: "#B0C4DE" },
+            { name: "lightyellow", friendly: "Light Yellow", hex: "#FFFFE0" },
+            { name: "lime", friendly: "Lime", hex: "#00FF00" },
+            { name: "limegreen", friendly: "Lime Green", hex: "#32CD32" },
+            { name: "linen", friendly: "Linen", hex: "#FAF0E6" },
+            { name: "magenta", friendly: "Magenta", hex: "#FF00FF" },
+            { name: "maroon", friendly: "Maroon", hex: "#800000" },
+            { name: "mediumaquamarine", friendly: "Medium Aquamarine", hex: "#66CDAA" },
+            { name: "mediumblue", friendly: "Medium Blue", hex: "#0000CD" },
+            { name: "mediumorchid", friendly: "Medium Orchid", hex: "#BA55D3" },
+            { name: "mediumpurple", friendly: "Medium Purple", hex: "#9370DB" },
+            { name: "mediumseagreen", friendly: "Medium Sea Green", hex: "#3CB371" },
+            { name: "mediumslateblue", friendly: "Medium Slate Blue", hex: "#7B68EE" },
+            { name: "mediumspringgreen", friendly: "Medium Spring Green", hex: "#00FA9A" },
+            { name: "mediumturquoise", friendly: "Medium Turquoise", hex: "#48D1CC" },
+            { name: "mediumvioletred", friendly: "Medium Violet Red", hex: "#C71585" },
+            { name: "midnightblue", friendly: "Midnight Blue", hex: "#191970" },
+            { name: "mintcream", friendly: "Mint Cream", hex: "#F5FFFA" },
+            { name: "mistyrose", friendly: "Misty Rose", hex: "#FFE4E1" },
+            { name: "moccasin", friendly: "Moccasin", hex: "#FFE4B5" },
+            { name: "navajowhite", friendly: "Navajo White", hex: "#FFDEAD" },
+            { name: "navy", friendly: "Navy", hex: "#000080" },
+            { name: "oldlace", friendly: "Old Lace", hex: "#FDF5E6" },
+            { name: "olive", friendly: "Olive", hex: "#808000" },
+            { name: "olivedrab", friendly: "Olive Drab", hex: "#6B8E23" },
+            { name: "orange", friendly: "Orange", hex: "#FFA500" },
+            { name: "orangered", friendly: "Orange Red", hex: "#FF4500" },
+            { name: "orchid", friendly: "Orchid", hex: "#DA70D6" },
+            { name: "palegoldenrod", friendly: "Pale Goldenrod", hex: "#EEE8AA" },
+            { name: "palegreen", friendly: "Pale Green", hex: "#98FB98" },
+            { name: "paleturquoise", friendly: "Pale Turquoise", hex: "#AFEEEE" },
+            { name: "palevioletred", friendly: "Pale Violet Red", hex: "#DB7093" },
+            { name: "papayawhip", friendly: "Papaya Whip", hex: "#FFEFD5" },
+            { name: "peachpuff", friendly: "Peach Puff", hex: "#FFDAB9" },
+            { name: "peru", friendly: "Peru", hex: "#CD853F" },
+            { name: "pink", friendly: "Pink", hex: "#FFC0CB" },
+            { name: "plum", friendly: "Plum", hex: "#DDA0DD" },
+            { name: "powderblue", friendly: "Powder Blue", hex: "#B0E0E6" },
+            { name: "purple", friendly: "Purple", hex: "#800080" },
+            { name: "rebeccapurple", friendly: "Rebecca Purple", hex: "#663399" },
+            { name: "red", friendly: "Red", hex: "#FF0000" },
+            { name: "rosybrown", friendly: "Rosy Brown", hex: "#BC8F8F" },
+            { name: "royalblue", friendly: "Royal Blue", hex: "#4169E1" },
+            { name: "saddlebrown", friendly: "Saddle Brown", hex: "#8B4513" },
+            { name: "salmon", friendly: "Salmon", hex: "#FA8072" },
+            { name: "sandybrown", friendly: "Sandy Brown", hex: "#F4A460" },
+            { name: "seagreen", friendly: "Sea Green", hex: "#2E8B57" },
+            { name: "seashell", friendly: "Seashell", hex: "#FFF5EE" },
+            { name: "sienna", friendly: "Sienna", hex: "#A0522D" },
+            { name: "silver", friendly: "Silver", hex: "#C0C0C0" },
+            { name: "skyblue", friendly: "Sky Blue", hex: "#87CEEB" },
+            { name: "slateblue", friendly: "Slate Blue", hex: "#6A5ACD" },
+            { name: "slategray", friendly: "Slate Gray", hex: "#708090" },
+            { name: "slategrey", friendly: "Slate Grey", hex: "#708090" },
+            { name: "snow", friendly: "Snow", hex: "#FFFAFA" },
+            { name: "springgreen", friendly: "Spring Green", hex: "#00FF7F" },
+            { name: "steelblue", friendly: "Steel Blue", hex: "#4682B4" },
+            { name: "tan", friendly: "Tan", hex: "#D2B48C" },
+            { name: "teal", friendly: "Teal", hex: "#008080" },
+            { name: "thistle", friendly: "Thistle", hex: "#D8BFD8" },
+            { name: "tomato", friendly: "Tomato", hex: "#FF6347" },
+            { name: "turquoise", friendly: "Turquoise", hex: "#40E0D0" },
+            { name: "violet", friendly: "Violet", hex: "#EE82EE" },
+            { name: "wheat", friendly: "Wheat", hex: "#F5DEB3" },
+            { name: "white", friendly: "White", hex: "#FFFFFF" },
+            { name: "whitesmoke", friendly: "White Smoke", hex: "#F5F5F5" },
+            { name: "yellow", friendly: "Yellow", hex: "#FFFF00" },
+            { name: "yellowgreen", friendly: "Yellow Green", hex: "#9ACD32" }
+        ];
+
+        // Find closest
+        function findClosestColor(rgb) {
+            let minDist = Infinity, closest = null;
+            cssColors.forEach(c => {
+                const dist = colorDistance(rgb, hexToRgb(c.hex));
+                if (dist < minDist) { minDist = dist; closest = c; }
+            });
+            return closest;
+        }
+
+        // ======= DOM Elements =======
+        const colorInput = document.getElementById("colorInput");
+        const swatch = document.getElementById("colorSwatch");
+        const hexValue = document.getElementById("hexValue");
+        const rgbValue = document.getElementById("rgbValue");
+        const hslValue = document.getElementById("hslValue");
+        const hsvValue = document.getElementById("hsvValue");
+        const cmykValue = document.getElementById("cmykValue");
+        const cssName = document.getElementById("cssName");
+        const friendlyName = document.getElementById("friendlyName");
+        const contrastInfo = document.getElementById("contrastInfo");
+        const previewWhite = document.getElementById("previewWhite");
+        const previewBlack = document.getElementById("previewBlack");
+        const copyBtn = document.getElementById("copyColorBtn");
+        const colorPickerBtn = document.getElementById("colorPickerBtn");
+        const similarColorsDiv = document.getElementById("similarColors");
+
+        // ======= Update Display =======
+        function updateColorDisplay(rgb, closest) {
+            const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+            swatch.style.backgroundColor = hex;
+            hexValue.textContent = `HEX: ${hex}`;
+            rgbValue.textContent = `RGB: rgb(${rgb.r},${rgb.g},${rgb.b})`;
+
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+
+            hslValue.textContent = `HSL: hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;
+            hsvValue.textContent = `HSV: hsv(${hsv.h},${hsv.s}%,${hsv.v}%)`;
+            cmykValue.textContent = `CMYK: ${cmyk.c}%,${cmyk.m}%,${cmyk.y}%,${cmyk.k}%`;
+
+            cssName.textContent = `CSS Name: ${closest.name}`;
+            friendlyName.textContent = `Friendly Name: ${closest.friendly}`;
+
+            // Contrast
+            const white = { r: 255, g: 255, b: 255 }, black = { r: 0, g: 0, b: 0 };
+            const contrastW = contrastRatio(rgb, white), contrastB = contrastRatio(rgb, black);
+            const best = contrastW > contrastB ? "White Text" : "Black Text";
+            contrastInfo.textContent = `Best Contrast: ${best}`;
+
+            previewWhite.style.backgroundColor = hex;
+            previewWhite.style.color = "white";
+            previewBlack.style.backgroundColor = hex;
+            previewBlack.style.color = "black";
+
+            // Similar colors
+            similarColorsDiv.innerHTML = "";
+            const sorted = cssColors.map(c => ({ ...c, dist: colorDistance(rgb, hexToRgb(c.hex)) }))
+                .sort((a, b) => a.dist - b.dist)
+                .slice(1, 4);
+            sorted.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "similar-color-swatch";
+                div.style.backgroundColor = c.hex;
+                div.title = `${c.friendly} (${c.hex})`;
+                similarColorsDiv.appendChild(div);
+            });
+        }
+
+        // ======= Events =======
+        function handleInput() {
+            const rgb = parseColorInput(colorInput.value);
+            if (!rgb) { alert("Invalid format! Use HEX (#FFF or #FFFFFF) or RGB."); return; }
+            const closest = findClosestColor(rgb);
+            updateColorDisplay(rgb, closest);
+        }
+        colorInput.addEventListener("keydown", e => { if (e.key === "Enter") handleInput(); });
+        colorPickerBtn.addEventListener("click", handleInput);
+        copyBtn.addEventListener("click", () => {
+            // Prefer copying the HEX value, fallback to RGB if not found
+            var hex = document.getElementById("hexValue");
+            var rgb = document.getElementById("rgbValue");
+            var toCopy = hex ? hex.textContent.replace("HEX: ", "") : "";
+            if (!toCopy && rgb) toCopy = rgb.textContent.replace("RGB: ", "");
+            if (toCopy) {
+                navigator.clipboard.writeText(toCopy).then(() => {
+                    showToast("Copied: " + toCopy);
+                }).catch(err => {
+                    showToast("Failed to copy color!");
+                    console.error(err);
+                });
+            } else {
+                showToast("Nothing to copy!");
+            }
+        });
+
+
+        // Default load
+        document.addEventListener("DOMContentLoaded", () => {
+            const rgb = hexToRgb("#764BA2");
+            const closest = findClosestColor(rgb);
+            updateColorDisplay(rgb, closest);
+            colorInput.value = "#764BA2";
+        });
+
+    </script>
+        <script src="PickColors.js"></script>
+
 </body>
 </html>

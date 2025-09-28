@@ -101,6 +101,134 @@
     </div>
 </div>
 
-    <script src="PickColors.js"></script>
+    <script>
+
+            // ======================= Color Picker Functions =======================
+
+
+        // ======= Utility Functions =======
+        function hexToRgb(hex) {
+            hex = hex.replace("#", "");
+            if (hex.length === 3) hex = hex.split("").map(h => h + h).join("");
+            const bigint = parseInt(hex, 16);
+            return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) h = s = 0;
+            else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h *= 60;
+            }
+            return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            const v = max;
+            const d = max - min;
+            const s = max === 0 ? 0 : d / max;
+            let h = 0;
+            if (d !== 0) {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h *= 60;
+            }
+            return { h: Math.round(h), s: Math.round(s * 100), v: Math.round(v * 100) };
+        }
+
+        function rgbToCmyk(r, g, b) {
+            if (r === 0 && g === 0 && b === 0) return { c: 0, m: 0, y: 0, k: 100 };
+            let c = 1 - r / 255, m = 1 - g / 255, y = 1 - b / 255;
+            let k = Math.min(c, m, y);
+            c = (c - k) / (1 - k); m = (m - k) / (1 - k); y = (y - k) / (1 - k);
+            return { c: Math.round(c * 100), m: Math.round(m * 100), y: Math.round(y * 100), k: Math.round(k * 100) };
+        }
+
+        // ======= Update Color Info =======
+        function updateColorInfo(hex) {
+            const rgb = hexToRgb(hex);
+            if (!rgb) return;
+
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+
+            document.getElementById('colorPreview').style.backgroundColor = hex;
+            document.getElementById('colorPreview').textContent = hex.toUpperCase();
+            document.getElementById('hexOutput').textContent = hex.toUpperCase();
+            document.getElementById('rgbOutput').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            document.getElementById('hslOutput').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+            document.getElementById('hsvOutput').textContent = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`;
+            document.getElementById('cmykOutput').textContent = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`;
+        }
+
+        // ======= Copy Color with Toast =======
+        function copyColorValue(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = `Copied: ${text}`;
+                toast.style.background = 'linear-gradient(135deg, #38a169, #2f855a)';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2500);
+            }).catch(() => {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = 'Failed to copy!';
+                toast.style.background = 'linear-gradient(135deg, #e53e3e, #c53030)';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2500);
+            });
+        }
+
+        // ======= Event Listeners =======
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorPickerInput = document.getElementById('colorPickerInput');
+            const hexInputField = document.getElementById('hexInputField');
+            if (colorPickerInput && hexInputField) {
+                colorPickerInput.addEventListener('input', function () {
+                    const hex = colorPickerInput.value;
+                    hexInputField.value = hex;
+                    updateColorInfo(hex);
+                });
+                hexInputField.addEventListener('input', function () {
+                    const hex = hexInputField.value;
+                    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+                        colorPickerInput.value = hex;
+                        updateColorInfo(hex);
+                    }
+                });
+                // Copy on clicking color values
+                document.querySelectorAll('.color-value, #colorPreview').forEach(el => {
+                    el.addEventListener('click', () => copyColorValue(el.textContent));
+                });
+                // Initialize default
+                updateColorInfo('#667eea');
+            }
+        });</script>
+            <script src="PickColors.js"></script>
+
 </body>
 </html>

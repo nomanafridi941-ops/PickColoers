@@ -82,6 +82,180 @@
     </div>
 </div>
 
-    <script src="PickColors.js"></script>
+    <script>
+
+// ================== 🎬 Video/GIF Color Palette Extractor ===========================
+const videoUpload = document.getElementById("videoUpload");
+const videoPlayer = document.getElementById("videoPreview");
+const captureBtn = document.getElementById("captureFrame");
+const canvas = document.getElementById("videoCanvas");
+let ctx = null;
+if (canvas) {
+    ctx = canvas.getContext("2d");
+} else {
+    console.error("videoCanvas not found");
+}
+const paletteDiv = document.getElementById("videoPalette");
+
+let videoPalette = [];
+
+// Upload video
+videoUpload.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!(file.type.startsWith("video/") || file.type === "image/gif")) {
+        return alert("Please select a valid video or GIF.");
+    }
+    if (file.size > 20 * 1024 * 1024) {
+        return alert("File must be under 20MB.");
+    }
+    const url = URL.createObjectURL(file);
+    videoPlayer.src = url;
+});
+
+// Capture frame
+captureBtn.addEventListener("click", () => {
+    if (videoPlayer.readyState < 2) return alert("Video not ready yet!");
+    canvas.width = videoPlayer.videoWidth;
+    canvas.height = videoPlayer.videoHeight;
+    ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+    canvas.style.display = "block";
+});
+
+// Pick color from canvas
+canvas.addEventListener("click", e => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = Math.floor((e.clientX - rect.left) * scaleX);
+    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const hex = rgbToHex(pixel[0], pixel[1], pixel[2]).toUpperCase();
+
+    if (!videoPalette.includes(hex)) {
+        videoPalette.push(hex);
+        renderVideoPalette();
+        showToast(`🎨 Added ${hex}`);
+    }
+});
+
+// Extract ALL visible colors (no max limit)
+function extractColorsFromCanvas() {
+    if (canvas.style.display === "none") {
+        showToast("⚠️ Capture a frame first!");
+        paletteDiv.innerHTML = "<div style='color:#c00; padding:1em;'>Please capture a frame from the video before extracting colors.</div>";
+        return;
+    }
+
+    let data;
+    try {
+        data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    } catch (e) {
+        paletteDiv.innerHTML = "<div style='color:#c00; padding:1em;'>Unable to read canvas data. Make sure a video frame is captured and the video is from a supported source.</div>";
+        showToast("❌ Unable to read canvas data");
+        return;
+    }
+
+    const colorMap = new Map();
+
+    // ⚡ Reduce granularity slightly (step = 16 → ~4M possible colors, safe for browsers)
+    for (let i = 0; i < data.length; i += 4) {
+        let r = Math.round(data[i] / 16) * 16;
+        let g = Math.round(data[i + 1] / 16) * 16;
+        let b = Math.round(data[i + 2] / 16) * 16;
+        const hex = rgbToHex(r, g, b).toUpperCase();
+        colorMap.set(hex, (colorMap.get(hex) || 0) + 1);
+    }
+
+    // Sare unique colors frequency ke sath
+    const sorted = Array.from(colorMap.entries()).sort((a, b) => b[1] - a[1]);
+    const newPalette = sorted.map(entry => entry[0]); // ✅ sabhi colors
+
+    if (newPalette.length === 0) {
+        paletteDiv.innerHTML = "<div style='color:#c00; padding:1em;'>No colors found. Try capturing a different frame or using a different video.</div>";
+        showToast("⚠️ No colors found");
+        return;
+    }
+
+    // Duplicate avoid karo
+    videoPalette = [...new Set([...videoPalette, ...newPalette])];
+    renderVideoPalette();
+    showToast(`✅ Extracted ${newPalette.length} unique colors`);
+}
+
+// Render palette
+function renderVideoPalette() {
+    paletteDiv.innerHTML = "";
+    videoPalette.forEach(hex => {
+        const div = document.createElement("div");
+        div.className = "palette-color";
+        div.style.background = hex;
+        div.textContent = hex;
+        div.onclick = () => {
+            copyToClipboard(hex);
+            showToast(`📋 Copied ${hex}`);
+        };
+        paletteDiv.appendChild(div);
+    });
+}
+
+// ✅ Helper: Download any blob as file
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Export JSON
+function exportJSON() {
+    if (videoPalette.length === 0) return showToast("⚠️ No colors to export.");
+    const blob = new Blob([JSON.stringify(videoPalette, null, 2)], { type: "application/json" });
+    downloadBlob(blob, "palette.json");
+    showToast("✅ JSON Exported");
+}
+
+// Export CSS Vars
+function exportCSSVars() {
+    if (videoPalette.length === 0) return showToast("⚠️ No colors to export.");
+    let css = ":root {\n";
+    videoPalette.forEach((c, i) => css += `  --color-${i + 1}: ${c};\n`);
+    css += "}";
+    const blob = new Blob([css], { type: "text/css" });
+    downloadBlob(blob, "palette.css");
+    showToast("✅ CSS Vars Exported");
+}
+
+// Copy HEX List
+function copyHEXList() {
+    if (videoPalette.length === 0) return showToast("⚠️ No colors to copy.");
+    copyToClipboard(videoPalette.join(", "));
+    showToast("📋 HEX list copied");
+}
+
+// Clear Palette
+function clearPalette() {
+    videoPalette = [];
+    renderVideoPalette();
+    showToast("🧹 Cleared");
+}
+
+// Wire buttons AFTER DOM loaded
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("exportJSON").onclick = exportJSON;
+    document.getElementById("exportCSS").onclick = exportCSSVars;
+    document.getElementById("copyHEX").onclick = copyHEXList;
+    document.getElementById("clearPalette").onclick = clearPalette;
+    document.getElementById("extractAll").onclick = () => extractColorsFromCanvas();
+});
+
+
+    </script>
+        <script src="PickColors.js"></script>
+
 </body>
 </html>

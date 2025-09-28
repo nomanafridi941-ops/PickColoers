@@ -78,6 +78,335 @@
     </div>
 </div>
 
-    <script src="PickColors.js"></script>
+    <script>
+
+  // ======================= 🖌️ Image Color Extractor =======================
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            function rgbToHex(r, g, b) { return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase(); }
+            function copyToClipboard(t) { navigator.clipboard.writeText(t).then(() => showToast); }
+            // Global Toast Function
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                // Add type styling
+                if (type === 'success') toast.style.background = '#38a169';
+                else if (type === 'error') toast.style.background = '#e53e3e';
+                else toast.style.background = '#222';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2500);
+            }
+
+            let currentPalette = [];
+            let uploadedImage = null;
+            const imageUpload = document.getElementById('imageUpload');
+            const imageUploadBox = document.getElementById('imageUploadBox');
+            const imageCanvas = document.getElementById('imageCanvas');
+            const canvasCtx = imageCanvas.getContext('2d');
+
+            imageUploadBox.addEventListener('click', () => imageUpload.click());
+
+            // Add drag and drop functionality
+            imageUploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imageUploadBox.style.borderColor = '#667eea';
+            });
+
+            imageUploadBox.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                imageUploadBox.style.borderColor = '#764ba2';
+            });
+
+            imageUploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imageUploadBox.style.borderColor = '#764ba2';
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    processImageFile(file);
+                }
+            });
+
+            imageUpload.addEventListener('change', e => {
+                const file = e.target.files[0];
+                if (file) {
+                    processImageFile(file);
+                }
+            });
+
+            function processImageFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    showToast('⚠️ Please select an image file', 'error');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('⚠️ File too large (max 5MB)', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const img = new Image();
+                    img.onload = function () {
+                        // Show canvas
+                        imageCanvas.style.display = "block";
+
+                        // Calculate proper dimensions
+                        const maxWidth = 600;
+                        const maxHeight = 400;
+                        let { width, height } = img;
+
+                        // Scale down if too large
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width = Math.floor(width * ratio);
+                            height = Math.floor(height * ratio);
+                        }
+
+                        // Set canvas size
+                        imageCanvas.width = width;
+                        imageCanvas.height = height;
+
+                        // Clear and draw image
+                        canvasCtx.clearRect(0, 0, width, height);
+                        canvasCtx.drawImage(img, 0, 0, width, height);
+
+                        uploadedImage = img;
+                        showToast("✅ Image loaded! Click to pick colors or extract all.", 'success');
+                    };
+                    img.onerror = () => showToast('⚠️ Failed to load image', 'error');
+                    img.src = ev.target.result;
+                };
+                reader.onerror = () => showToast('⚠️ Failed to read file', 'error');
+                reader.readAsDataURL(file);
+            }
+
+            imageCanvas.addEventListener('click', e => {
+                if (!uploadedImage) {
+                    showToast('⚠️ Please upload an image first', 'error');
+                    return;
+                }
+
+                const rect = imageCanvas.getBoundingClientRect();
+                const x = Math.floor((e.clientX - rect.left) * (imageCanvas.width / rect.width));
+                const y = Math.floor((e.clientY - rect.top) * (imageCanvas.height / rect.height));
+
+                // Make sure coordinates are within bounds
+                if (x >= 0 && x < imageCanvas.width && y >= 0 && y < imageCanvas.height) {
+                    const pixel = canvasCtx.getImageData(x, y, 1, 1).data;
+                    const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+                    if (!currentPalette.includes(hex)) {
+                        currentPalette.push(hex);
+                        renderPalette();
+                        showToast(`🎨 Added ${hex}`, 'success');
+                    } else {
+                        showToast(`🎨 ${hex} already in palette`, 'info');
+                    }
+                }
+            });
+
+            function renderPalette() {
+                const div = document.getElementById('extractedPalette');
+                div.innerHTML = '';
+
+                currentPalette.forEach((hex, index) => {
+                    const colorDiv = document.createElement('div');
+                    colorDiv.className = 'palette-color';
+                    colorDiv.style.backgroundColor = hex;
+                    colorDiv.textContent = hex;
+                    colorDiv.title = `Click to copy ${hex}`;
+                    colorDiv.onclick = () => {
+                        copyToClipboard(hex);
+                        showToast(`📋 Copied ${hex}`, 'success');
+                    };
+                    div.appendChild(colorDiv);
+                });
+            }
+
+            function extractAllColors(maxColors = 20) {
+                if (!uploadedImage) {
+                    showToast("⚠️ Please upload an image first", 'error');
+                    return;
+                }
+
+                try {
+                    // Get image data
+                    const imageData = canvasCtx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+                    const data = imageData.data;
+                    const colorMap = new Map();
+
+                    // Better sampling - every 2nd pixel for more accurate color detection
+                    const totalPixels = data.length / 4;
+                    const step = Math.max(1, Math.floor(totalPixels / 15000)); // Sample up to 15k pixels
+
+                    for (let i = 0; i < data.length; i += 4 * step) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+                        const a = data[i + 3];
+
+                        // Skip transparent pixels
+                        if (a < 100) continue;
+
+                        // Human eye perception - use smaller grouping for natural colors
+                        const roundedR = Math.round(r / 8) * 8; // More precise color grouping
+                        const roundedG = Math.round(g / 8) * 8;
+                        const roundedB = Math.round(b / 8) * 8;
+
+                        const hex = rgbToHex(roundedR, roundedG, roundedB);
+
+                        // Better brightness filtering for human-visible colors
+                        const brightness = (roundedR * 0.299 + roundedG * 0.587 + roundedB * 0.114); // Human eye luminance
+                        if (brightness < 15 || brightness > 240) continue;
+
+                        // Calculate color saturation to prefer vibrant colors
+                        const max = Math.max(roundedR, roundedG, roundedB);
+                        const min = Math.min(roundedR, roundedG, roundedB);
+                        const saturation = max === 0 ? 0 : (max - min) / max;
+
+                        // Weight colors by saturation and frequency
+                        const weight = saturation > 0.1 ? 2 : 1; // Prefer more saturated colors
+                        colorMap.set(hex, (colorMap.get(hex) || 0) + weight);
+                    }
+
+                    if (colorMap.size === 0) {
+                        showToast('⚠️ No distinct colors found in image', 'error');
+                        return;
+                    }
+
+                    // Enhanced color sorting - prefer diverse and vibrant colors
+                    const sortedColors = Array.from(colorMap.entries())
+                        .sort((a, b) => {
+                            // Sort by weighted frequency
+                            return b[1] - a[1];
+                        })
+                        .map(entry => entry[0])
+                        .filter(hex => hex && hex.length === 7 && hex.startsWith('#')); // Extra validation
+
+                    // Smart color selection - avoid too similar colors
+                    const selectedColors = [];
+                    for (const color of sortedColors) {
+                        if (selectedColors.length >= maxColors) break;
+
+                        // Check if this color is too similar to already selected colors
+                        const isSimilar = selectedColors.some(existingColor => {
+                            const rgb1 = hexToRgb(color);
+                            const rgb2 = hexToRgb(existingColor);
+                            const distance = Math.sqrt(
+                                Math.pow(rgb1.r - rgb2.r, 2) +
+                                Math.pow(rgb1.g - rgb2.g, 2) +
+                                Math.pow(rgb1.b - rgb2.b, 2)
+                            );
+                            return distance < 40; // Minimum color distance threshold
+                        });
+
+                        if (!isSimilar) {
+                            selectedColors.push(color);
+                        }
+                    }
+
+                    // Add new colors to palette (avoid duplicates)
+                    const newColors = selectedColors.filter(color => !currentPalette.includes(color));
+                    currentPalette = [...currentPalette, ...newColors];
+
+                    renderPalette();
+                    showToast(`🎨 Extracted ${newColors.length} distinct natural colors`, 'success');
+
+                } catch (error) {
+                    console.error('Error extracting colors:', error);
+                    showToast('⚠️ Error extracting colors', 'error');
+                }
+            }
+
+            // Helper function to convert hex to RGB - more robust
+            function hexToRgb(hex) {
+                // Remove # if present and ensure valid hex
+                hex = hex.replace('#', '');
+
+                // Validate hex format
+                if (!/^[0-9A-Fa-f]{6}$/.test(hex)) {
+                    console.warn('Invalid hex color:', hex);
+                    return null;
+                }
+
+                return {
+                    r: parseInt(hex.substring(0, 2), 16),
+                    g: parseInt(hex.substring(2, 4), 16),
+                    b: parseInt(hex.substring(4, 6), 16)
+                };
+            }
+
+            // Event listeners
+            document.getElementById('extractAllColorsBtn').onclick = extractAllColors;
+
+            document.getElementById('exportJSONBtn').onclick = () => {
+                if (!currentPalette.length) {
+                    showToast('⚠️ No colors in palette', 'error');
+                    return;
+                }
+                const blob = new Blob([JSON.stringify(currentPalette, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'color-palette.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('📁 JSON exported', 'success');
+            };
+
+            document.getElementById('exportCSSBtn').onclick = () => {
+                if (!currentPalette.length) {
+                    showToast('⚠️ No colors in palette', 'error');
+                    return;
+                }
+                let css = ':root {\n';
+                currentPalette.forEach((color, i) => css += `  --color-${i + 1}: ${color};\n`);
+                css += '}';
+
+                const blob = new Blob([css], { type: 'text/css' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'color-palette.css';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('📁 CSS exported', 'success');
+            };
+
+            document.getElementById('copyHEXBtn').onclick = () => {
+                if (!currentPalette.length) {
+                    showToast('⚠️ No colors in palette', 'error');
+                    return;
+                }
+                copyToClipboard(currentPalette.join('\n'));
+                showToast('📋 All colors copied', 'success');
+            };
+
+            document.getElementById('clearPaletteBtn').onclick = () => {
+                currentPalette = [];
+                renderPalette();
+
+                // Reset upload box to original state
+                imageCanvas.style.display = 'none';
+                imageUploadBox.classList.remove('has-image');
+                canvasCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+                uploadedImage = null;
+                imageUpload.value = '';
+
+                showToast('🗑️ Palette cleared & image removed', 'info');
+            };
+        });
+
+
+
+    </script>
+        <script src="PickColors.js"></script>
+
 </body>
 </html>
