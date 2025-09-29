@@ -21,6 +21,6 @@ export default async function handler(req, res) {
     res.setHeader("Content-Type", "text/html");
     res.status(200).send(html);
   } else {
-    res.status(200).sendFile("PickColors.html", { root: "./" });
+    res.status(200).sendFile("index.html", { root: "./" });
   }
 }
