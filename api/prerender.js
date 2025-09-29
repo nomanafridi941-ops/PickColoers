@@ -23,19 +23,23 @@ export default async function handler(req, res) {
         headers: { "X-Prerender-Token": process.env.PRERENDER_TOKEN }
       });
 
+      if (!snapshot.ok) throw new Error("Prerender service failed");
+
       const html = await snapshot.text();
-      res.setHeader("Content-Type", "text/html");
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.status(200).send(html);
     } catch (err) {
+      console.error("Prerender error:", err);
       res.status(500).send("Prerender request failed.");
     }
   } else {
     try {
       const filePath = path.join(process.cwd(), "index.html");
       const html = fs.readFileSync(filePath, "utf-8");
-      res.setHeader("Content-Type", "text/html");
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.status(200).send(html);
     } catch (err) {
+      console.error("File error:", err);
       res.status(500).send("Error loading index.html");
     }
   }
