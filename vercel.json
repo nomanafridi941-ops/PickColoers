@@ -1,9 +1,9 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/prerender" }
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" }
   ],
-  "staticFiles": {
-    "robots.txt": "robots.txt",
-    "sitemap.xml": "sitemap.xml"
-  }
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
