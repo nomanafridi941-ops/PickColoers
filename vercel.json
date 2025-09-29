@@ -1,5 +1,9 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/prerender" }
-  ]
+  ],
+  "staticFiles": {
+    "robots.txt": "robots.txt",
+    "sitemap.xml": "sitemap.xml"
+  }
 }
