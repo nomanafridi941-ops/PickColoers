@@ -6030,46 +6030,49 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         /* 🎲 Random Palette Inspiration END (JS) */
 
-  // Default page dikhana (Home ya pehla tool)
-  document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.hash) {
-      showPage(window.location.hash.substring(1));
-    } else {
-      showPage("home", false); // default page, URL hash update NA karo
-    }
+  // ======================= Page Navigation System =======================
+
+// Default page dikhana (Home ya pehla tool)
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.location.hash) {
+    showPage(window.location.hash.substring(1));
+  } else {
+    showPage("home", false); // default page, URL hash update NA karo
+  }
+});
+
+// Logo click ke liye function (URL clean karega)
+function goHome() {
+  showPage("home", false);   // Home show karo bina hash ke
+  history.pushState("", document.title, "/"); // ✅ URL clean karo (sirf domain)
+}
+
+// Generic page show function
+function showPage(id, updateHash = true) {
+  // Sab pages hide karo
+  document.querySelectorAll(".page").forEach(page => {
+    page.style.display = "none";
   });
 
-  // Logo click ke liye function (URL clean karega)
-  function goHome() {
-    showPage("home", false);   // Home show karo bina hash ke
-    history.pushState("", document.title, "/"); // ✅ URL clean karo (sirf domain)
-  }
-
-  // Generic page show function
-  function showPage(id, updateHash = true) {
-    // Sab pages hide karo
-    document.querySelectorAll(".page").forEach(page => {
-      page.style.display = "none";
-    });
-
-    // Jo page chahiye usko show karo
-    const pageToShow = document.getElementById(id);
-    if (pageToShow) {
-      pageToShow.style.display = "block";
-      if (updateHash) {
-        window.location.hash = id;
-      }
+  // Jo page chahiye usko show karo
+  const pageToShow = document.getElementById(id);
+  if (pageToShow) {
+    pageToShow.style.display = "block";
+    if (updateHash) {
+      window.location.hash = id; // ✅ Hash update karo
     }
-
-    // ✅ Navigation active class update
-    document.querySelectorAll("nav .nav-links a").forEach(link => {
-      link.classList.remove("active");
-      const href = link.getAttribute("href").replace("#", "");
-      if (href === id) {
-        link.classList.add("active");
-      }
-    });
   }
+
+  // ✅ Navigation active class update
+  document.querySelectorAll("nav .nav-links a, nav .dropdown-menu a").forEach(link => {
+    link.classList.remove("active");
+    const href = link.getAttribute("href");
+    if (href && href.replace("#", "") === id) {
+      link.classList.add("active");
+    }
+  });
+}
+
 
 
 
