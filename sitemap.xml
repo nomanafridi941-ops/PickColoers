@@ -1,80 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Homepage -->
   <url>
     <loc>https://pickcoloers.xyz/</loc>
     <priority>1.0</priority>
-  </url>
-
-  <!-- Tools: Conversion & Analysis -->
-  <url>
-    <loc>https://pickcoloers.xyz/color-picker</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/name-that-color</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/color-finder</loc>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Tools: Palette & Gradient -->
-  <url>
-    <loc>https://pickcoloers.xyz/gradient-maker</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/color-harmonies</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/image-color-extractor</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/video-color-extractor</loc>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Tools: Accessibility & Usability -->
-  <url>
-    <loc>https://pickcoloers.xyz/contrast-checker</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/readability-tester</loc>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Tools: Creative & Mood -->
-  <url>
-    <loc>https://pickcoloers.xyz/mood-board-generator</loc>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/random-palette-inspiration</loc>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Other Pages -->
-  <url>
-    <loc>https://pickcoloers.xyz/about</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/contact</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/privacy</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://pickcoloers.xyz/terms</loc>
-    <priority>0.5</priority>
   </url>
 
 </urlset>
